@@ -21,10 +21,33 @@
       h1 {
         margin-left: 18px;
       }
+      .saved {
+        color: blue;
+        opacity: 0;
+        margin-left: 75px;
+      }
     </style>
     <script>
+      var hideInterval = null;
       function setSetting(e) {
         localStorage.setItem(e.name, e.id);
+        document.getElementById(e.name).style.opacity = 1;
+        hideInterval = window.setInterval(hide, 250);
+      }
+      var hide = function() {
+        var i, teller = 0, items = document.getElementsByClassName("saved");
+        for (i=0; i<items.length; i++) {
+          if (!items[i].style || !items[i].style.opacity)
+            items[i].style.opacity = 0;
+          else if (items[i].style.opacity > 0)
+            items[i].style.opacity = items[i].style.opacity - 0.03;
+          if (items[i].style.opacity < 0.05)
+            items[i].style.opacity = 0;
+          else 
+            teller++;
+        }
+        if (!teller)
+          clearInterval(hideInterval);
       }
     </script>
   </head>
@@ -32,7 +55,8 @@
     <h1>Options</h1>
     <fieldset>
       <legend>Select the email service you use</legend>
-      <input name="mail" type="radio" id="gmail" onchange="setSetting(this);"/><label for="gmail">Gmail</label><br/>
+      <input name="mail" type="radio" id="gmail" onchange="setSetting(this);"/><label for="gmail">Gmail</label>
+      <span class="saved" id="mail">Saved!</span><br/>
       <input name="mail" type="radio" id="hotmail" onchange="setSetting(this);"/><label for="hotmail">Hotmail</label><br/>
       <input name="mail" type="radio" id="ymail" onchange="setSetting(this);"/><label for="ymail">Yahoo mail</label><br/>
     </form>
