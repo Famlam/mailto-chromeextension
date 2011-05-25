@@ -1,0 +1,44 @@
+<html>
+  <head>
+    <title>Options</title>
+    <style>
+      body {
+        padding-left: 25px;
+        font: 14px arial;
+      }
+      fieldset {
+        -webkit-border-radius: 4px;
+        border: 1px solid #666666;
+        background-color: #f8faff;
+      }
+      legend {
+        padding: 0 5px;
+      }
+      label {
+        padding-left: 5px;
+        cursor: pointer;
+      }
+      h1 {
+        margin-left: 18px;
+      }
+    </style>
+    <script>
+      function setSetting(e) {
+        localStorage.setItem(e.name, e.id);
+      }
+    </script>
+  </head>
+  <body>
+    <h1>Options</h1>
+    <fieldset>
+      <legend>Select the email service you use</legend>
+      <input name="mail" type="radio" id="gmail" onchange="setSetting(this);"/><label for="gmail">Gmail</label><br/>
+      <input name="mail" type="radio" id="hotmail" onchange="setSetting(this);"/><label for="hotmail">Hotmail</label><br/>
+      <input name="mail" type="radio" id="ymail" onchange="setSetting(this);"/><label for="ymail">Yahoo mail</label><br/>
+    </form>
+    <script>
+      if (localStorage.mail)
+        document.getElementById(localStorage.mail).checked = true;
+    </script>
+  </body>
+</html>

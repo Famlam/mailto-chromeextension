@@ -1,0 +1,16 @@
+<html>
+  <head>
+    <script>
+      chrome.extension.onRequest.addListener(function(request, sender, sendResponse) {
+          if (request == "email")
+            sendResponse(localStorage.mail || "gmail");
+        });
+
+      if (!localStorage.mail)
+        window.open(chrome.extension.getURL('options.html?'), "_blank", 
+                    'scrollbars=0,location=0,resizable=0,width=450,height=160');
+    </script>
+  </head>
+  <body>
+  </body>
+</html>
