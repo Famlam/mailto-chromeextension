@@ -1,0 +1,14 @@
+{
+  "options": {
+    "message": "Options",
+    "description": "Title of the options page"
+  },
+  "emailservice": {
+    "message": "Select the email service you use",
+    "description": "The title of the block where the user can choose which email service (s)he uses"
+  },
+  "saved": {
+    "message": "Saved!",
+    "description": "Confirmation when someone changes an option"
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "options": {
+    "message": "Instellingen",
+    "description": "Title of the options page"
+  },
+  "emailservice": {
+    "message": "Selecteer de emailservice die je wilt gebruiken",
+    "description": "The title of the block where the user can choose which email service (s)he uses"
+  },
+  "saved": {
+    "message": "Opgeslagen!",
+    "description": "Confirmation when someone changes an option"
+  }
+}

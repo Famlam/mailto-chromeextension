@@ -1,6 +1,6 @@
 <html>
   <head>
-    <title>Options</title>
+    <title i18n="options"></title>
     <style>
       body {
         padding-left: 25px;
@@ -32,9 +32,9 @@
       function setSetting(e) {
         localStorage.setItem(e.name, e.id);
         document.getElementById(e.name).style.opacity = 1;
-        hideInterval = window.setInterval(hide, 250);
+        hideInterval = window.setInterval(hideSavedMessage, 250);
       }
-      var hide = function() {
+      var hideSavedMessage = function() {
         var i, teller = 0, items = document.getElementsByClassName("saved");
         for (i=0; i<items.length; i++) {
           if (!items[i].style || !items[i].style.opacity)
@@ -52,17 +52,22 @@
     </script>
   </head>
   <body>
-    <h1>Options</h1>
+    <h1 i18n="options"></h1>
     <fieldset>
-      <legend>Select the email service you use</legend>
+      <legend i18n="emailservice"></legend>
       <input name="mail" type="radio" id="gmail" onchange="setSetting(this);"/><label for="gmail">Gmail</label>
-      <span class="saved" id="mail">Saved!</span><br/>
+      <span class="saved" id="mail" i18n="saved"></span><br/>
       <input name="mail" type="radio" id="hotmail" onchange="setSetting(this);"/><label for="hotmail">Hotmail</label><br/>
       <input name="mail" type="radio" id="ymail" onchange="setSetting(this);"/><label for="ymail">Yahoo mail</label><br/>
     </form>
     <script>
       if (localStorage.mail)
         document.getElementById(localStorage.mail).checked = true;
+
+      // Translate a page into the users language
+      var i, items = document.querySelectorAll("[i18n]");
+      for (i=0; i<items.length; i++)
+        items[i].innerText = chrome.i18n.getMessage(items[i].getAttribute("i18n"));
     </script>
   </body>
 </html>

@@ -14,7 +14,8 @@
       "48": "icon48.png"
    },
    "name": "Mailto:",
-   "version": "1.1.0",  
+   "version": "1.2.0",  
    "background_page": "background.html",
-   "options_page": "options.html"
+   "options_page": "options.html",
+   "default_locale": "en"
 }
