@@ -7,14 +7,14 @@
       "all_frames": true
      } 
    ],
-   "description": "Open mailto: links with your favorite online email service",
+   "description": "__MSG_description__",
    "icons": {
       "128": "icon128.png",
       "16": "icon16.png",
       "48": "icon48.png"
    },
    "name": "Mailto:",
-   "version": "1.2.0",  
+   "version": "1.2.1",  
    "background_page": "background.html",
    "options_page": "options.html",
    "default_locale": "en"

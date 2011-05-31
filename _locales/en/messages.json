@@ -10,5 +10,9 @@
   "saved": {
     "message": "Saved!",
     "description": "Confirmation when someone changes an option"
+  },
+  "description": {
+    "message": "Open mailto: links with your favorite online email service",
+    "description": "The description shown on chrome://extensions/ and in the webstore"
   }
 }
