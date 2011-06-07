@@ -32,7 +32,7 @@
       function setSetting(e) {
         localStorage.setItem(e.name, e.id);
         document.getElementById(e.name).style.opacity = 1;
-        hideInterval = window.setInterval(hideSavedMessage, 250);
+        hideInterval = window.setInterval(hideSavedMessage, 225);
       }
       var hideSavedMessage = function() {
         var i, teller = 0, items = document.getElementsByClassName("saved");
@@ -58,7 +58,10 @@
       <input name="mail" type="radio" id="gmail" onchange="setSetting(this);"/><label for="gmail">Gmail</label>
       <span class="saved" id="mail" i18n="saved"></span><br/>
       <input name="mail" type="radio" id="hotmail" onchange="setSetting(this);"/><label for="hotmail">Hotmail</label><br/>
+      <input name="mail" type="radio" id="wlm" onchange="setSetting(this);"/><label for="wlm">Windows Live Mail</label><br/>
       <input name="mail" type="radio" id="ymail" onchange="setSetting(this);"/><label for="ymail">Yahoo mail</label><br/>
+      <input name="mail" type="radio" id="zoho" onchange="setSetting(this);"/><label for="zoho">Zoho mail</label><br/>
+
     </form>
     <script>
       if (localStorage.mail)
