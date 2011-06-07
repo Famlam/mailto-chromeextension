@@ -1,7 +1,7 @@
 window.addEventListener("load", function() {
   var i;
   var mailtoLinks = [];
-  var allHref = document.querySelectorAll("[href], [HREF]");
+  var allHref = document.querySelectorAll("[href]");
   for (i=0; i<allHref.length; i++) {
     if (/^mailto\:.+/i.test(allHref[i].href))
       mailtoLinks.push(allHref[i]);
@@ -34,8 +34,8 @@ window.addEventListener("load", function() {
           case "hotmail":
             // to cc subject body
             var hotmaillink = "compose?To=";
-            hotmaillink += (queryparts.to || "");
-            hotmaillink += (queryparts.cc ? "&CC=" + queryparts.cc : "");
+            hotmaillink += (queryparts.to.replace(/\,/g, ';') || "");
+            hotmaillink += (queryparts.cc ? "&CC=" + queryparts.cc.replace(/\,/g, ';') : "");
             hotmaillink += (queryparts.subject ? "&subject=" + queryparts.subject : "");
             hotmaillink += (queryparts.body ? "&body=" + queryparts.body : "");
             link = "http://mail.live.com/?rru=" + escape(hotmaillink);

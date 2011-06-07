@@ -1,0 +1,21 @@
+<html>
+  <head>
+    <title>Testcases for mailto:* links</title>
+  </head>
+  <body>
+    <a href="mailto:a@a.a"></a><br/>
+    <a href="mailto:a@a.a?SUBJECT=b"></a><br/>
+    <a href="mailto:a@a.a?CC=b@b.b"></a><br/>
+    <a href="mailto:a@a.a?BCC=b@b.b"></a><br/>
+    <a href="mailto:a@a.a?subject=c&body=d"></a><br/>
+    <a href="mailto:a@a.a,b@b.b,c@c.c"></a><br/>
+    <a href="mailto:a@a.a?bcc=b@b.b&cc=c@c.c,d@d.d&subject=e e&body=f f"></a><br/>
+    <a href="mailto:?subject=a%20b&body=b%20a"></a><br/>
+    <a href="mailto:a a <a@a.a>"></a><br/>
+    <script>
+      var links = document.getElementsByTagName("a");
+      for (var i = 0; i<links.length; i++)
+        links[i].innerText = links[i].href.substr(7);
+    </script>
+  </body>
+</html>
