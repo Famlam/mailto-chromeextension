@@ -32,7 +32,7 @@
       function setSetting(e) {
         localStorage.setItem(e.name, e.id);
         document.getElementById(e.name).style.opacity = 1;
-        hideInterval = window.setInterval(hideSavedMessage, 225);
+        hideInterval = window.setInterval(hideSavedMessage, 200);
       }
       var hideSavedMessage = function() {
         var i, teller = 0, items = document.getElementsByClassName("saved");

@@ -20,13 +20,23 @@ window.addEventListener("load", function() {
         var params = ("to=" + match[1]).replace(/\?/,'&').split('&');
         for (i = 0; i < params.length; i++) {
           var split = params[i].split('=');
-          queryparts[split[0].toLowerCase()] = unescape(split[1] || "");
+          var what = split[0].toLowerCase();
+          if (queryparts[what]) {
+            if (split[1] && (what == "to" || what == "bcc" || what == "cc"))
+              split[1] = queryparts[what] + ", " + split[1];
+            else if (what == "body")
+              split[1] = queryparts[what] + "%0D%0A" + split[1];
+          }
+          if (split[1])
+            queryparts[what] = unescape(split[1] || "");
         }
 
-        if (queryparts.to)
-          queryparts.to = queryparts.to.replace(/^.*\<(.+\@.+\..+)\>$/, "$1");
-        if (queryparts.cc)
-          queryparts.cc = queryparts.cc.replace(/^.*\<(.+\@.+\..+)\>$/, "$1");
+        var createPart = function(part, prefix, isAddress, useSemicolon) {
+          if (!part) return "";
+          if (isAddress) part = part.replace(/(^|\,)[^\,]*\<(.+?\@.+?\..+?)\>/g, "$1$2");
+          if (useSemicolon) part = part.replace(/\,/g, ';');
+          return (prefix || "") + escape(part);
+        };
 
         var link = "";
         switch (email) {
@@ -34,33 +44,33 @@ window.addEventListener("load", function() {
           case "hotmail":
             // to cc subject body
             var hotmaillink = "compose?To=";
-            hotmaillink += (queryparts.to.replace(/\,/g, ';') || "");
-            hotmaillink += (queryparts.cc ? "&CC=" + queryparts.cc.replace(/\,/g, ';') : "");
-            hotmaillink += (queryparts.subject ? "&subject=" + queryparts.subject : "");
-            hotmaillink += (queryparts.body ? "&body=" + queryparts.body : "");
+            hotmaillink += createPart(queryparts.to, "", true, true);
+            hotmaillink += createPart(queryparts.cc, "&CC=", true, true);
+            hotmaillink += createPart(queryparts.subject, "&subject=");
+            hotmaillink += createPart(queryparts.body, "&body=");
             link = "http://mail.live.com/?rru=" + escape(hotmaillink);
             break;
           case "gmail":
             // to cc bcc subject body
-            var gmaillink = (queryparts.to || "");
-            gmaillink += (queryparts.cc ? "&cc=" + queryparts.cc : "");
-            gmaillink += (queryparts.bcc ? "&bcc=" + queryparts.bcc : "");
-            gmaillink += (queryparts.subject ? "&su=" + queryparts.subject : "");
-            gmaillink += (queryparts.body ? "&body=" + queryparts.body : "");
+            var gmaillink = createPart(queryparts.to, "", true);
+            gmaillink += createPart(queryparts.cc, "&cc=", true);
+            gmaillink += createPart(queryparts.bcc, "&bcc=", true);
+            gmaillink += createPart(queryparts.subject, "&su=");
+            gmaillink += createPart(queryparts.body, "&body=");
             link = "https://mail.google.com/mail/?view=cm&tf=1&to=" + gmaillink;
             break;
           case "ymail":
             // to cc bcc subject body
-            var ymaillink = (queryparts.to || "");
-            ymaillink += (queryparts.cc ? "&Cc=" + queryparts.cc : "");
-            ymaillink += (queryparts.bcc ? "&Bcc=" + queryparts.bcc : "");
-            ymaillink += (queryparts.subject ? "&Subject=" + queryparts.subject : "");
-            ymaillink += (queryparts.body ? "&Body=" + queryparts.body : "");
+            var ymaillink = createPart(queryparts.to, "", true);
+            ymaillink += createPart(queryparts.cc, "&Cc=", true);
+            ymaillink += createPart(queryparts.bcc, "&Bcc=", true);
+            ymaillink += createPart(queryparts.subject, "&Subject=");
+            ymaillink += createPart(queryparts.body, "&Body=");
             link = "http://compose.mail.yahoo.com/?To=" + ymaillink;
             break;
           case "zoho":
             // to
-            var zoholink = (queryparts.to || "");
+            var zoholink = createPart(queryparts.to, "", true);
             link = "https://zmail.zoho.com/mail/compose.do?extsrc=mailto&mode=compose&tp=zb&ct=" + zoholink;
             break;
         }
