@@ -1,11 +1,11 @@
 {
-   "content_scripts": [ 
+   "content_scripts": [
      {
       "js": [ "mailto.js" ],
       "matches": [ "<all_urls>" ],
       "run_at": "document_start",
       "all_frames": true
-     } 
+     }
    ],
    "description": "__MSG_description__",
    "icons": {
@@ -14,7 +14,7 @@
       "48": "icon48.png"
    },
    "name": "Mailto:",
-   "version": "1.4.0",  
+   "version": "1.4.1",
    "background_page": "background.html",
    "options_page": "options.html",
    "default_locale": "en"

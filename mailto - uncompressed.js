@@ -3,18 +3,34 @@ window.addEventListener("load", function() {
   var mailtoLinks = [];
   var allHref = document.querySelectorAll("[href]");
   for (i=0; i<allHref.length; i++) {
-    if (/^mailto\:.+/i.test(allHref[i].href))
+    if (/^mailto\:.+/i.test(allHref[i].href)) {
       mailtoLinks.push(allHref[i]);
+    }
   }
   window.removeEventListener("load", arguments.callee);
 
   if (mailtoLinks.length) {
     chrome.extension.sendRequest("email", function(email) {
+      var createPart = function(part, prefix, isAddress, useSemicolon) {
+        if (!part) {
+          return "";
+        }
+        if (isAddress) {
+          part = part.replace(/(^|\,)[^\,]*\<(.+?\@.+?\..+?)\>/g, "$1$2");
+        }
+        if (useSemicolon) {
+          part = part.replace(/\,/g, ';');
+        }
+        return (prefix || "") + window.escape(part);
+      };
+
       var mailto;
       var i;
       for (mailto = 0; mailto < mailtoLinks.length; mailto++) {
         var match = mailtoLinks[mailto].href.match(/^mailto\:(.+)$/i);
-        if (!match) continue;
+        if (!match) {
+          continue;
+        }
 
         var queryparts = {};
         var params = ("to=" + match[1]).replace(/\?/,'&').split('&');
@@ -22,21 +38,16 @@ window.addEventListener("load", function() {
           var split = params[i].split('=');
           var what = split[0].toLowerCase();
           if (queryparts[what]) {
-            if (split[1] && (what == "to" || what == "bcc" || what == "cc"))
+            if (split[1] && (what === "to" || what === "bcc" || what === "cc")) {
               split[1] = queryparts[what] + ", " + split[1];
-            else if (what == "body")
+            } else if (what === "body") {
               split[1] = queryparts[what] + "%0D%0A" + split[1];
+            }
           }
-          if (split[1])
-            queryparts[what] = unescape(split[1] || "");
+          if (split[1]) {
+            queryparts[what] = window.unescape(split[1] || "");
+          }
         }
-
-        var createPart = function(part, prefix, isAddress, useSemicolon) {
-          if (!part) return "";
-          if (isAddress) part = part.replace(/(^|\,)[^\,]*\<(.+?\@.+?\..+?)\>/g, "$1$2");
-          if (useSemicolon) part = part.replace(/\,/g, ';');
-          return (prefix || "") + escape(part);
-        };
 
         var link = "";
         switch (email) {
@@ -48,7 +59,7 @@ window.addEventListener("load", function() {
             hotmaillink += createPart(queryparts.cc, "&CC=", true, true);
             hotmaillink += createPart(queryparts.subject, "&subject=");
             hotmaillink += createPart(queryparts.body, "&body=");
-            link = "http://mail.live.com/?rru=" + escape(hotmaillink);
+            link = "http://mail.live.com/?rru=" + window.escape(hotmaillink);
             break;
           case "gmail":
             // to cc bcc subject body

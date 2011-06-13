@@ -1,6 +1,8 @@
+<!DOCTYPE HTML>
 <html>
   <head>
     <title i18n="options"></title>
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
     <style>
       body {
         padding-left: 25px;
@@ -19,7 +21,7 @@
         cursor: pointer;
       }
       h1 {
-        margin-left: 18px;
+        margin: 12px 18px;
       }
       .saved {
         color: blue;
@@ -43,7 +45,7 @@
             items[i].style.opacity = items[i].style.opacity - 0.03;
           if (items[i].style.opacity < 0.05)
             items[i].style.opacity = 0;
-          else 
+          else
             teller++;
         }
         if (!teller)
@@ -61,8 +63,7 @@
       <input name="mail" type="radio" id="wlm" onchange="setSetting(this);"/><label for="wlm">Windows Live Mail</label><br/>
       <input name="mail" type="radio" id="ymail" onchange="setSetting(this);"/><label for="ymail">Yahoo mail</label><br/>
       <input name="mail" type="radio" id="zoho" onchange="setSetting(this);"/><label for="zoho">Zoho mail</label><br/>
-
-    </form>
+    </fieldset>
     <script>
       if (localStorage.mail)
         document.getElementById(localStorage.mail).checked = true;

@@ -1,13 +1,16 @@
+<!DOCTYPE HTML>
 <html>
   <head>
-    <script>
+    <title>Mailto</title>
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+    <script type="text/javascript">
       chrome.extension.onRequest.addListener(function(request, sender, sendResponse) {
           if (request == "email")
             sendResponse(localStorage.mail || "gmail");
         });
 
       if (!localStorage.mail)
-        window.open(chrome.extension.getURL('options.html'), "_blank", 
+        window.open(chrome.extension.getURL('options.html'), "_blank",
                     'scrollbars=0,location=0,resizable=0,width=450,height=200');
     </script>
   </head>
