@@ -10,26 +10,25 @@ window.addEventListener("load", function() {
   window.removeEventListener("load", arguments.callee);
 
   if (mailtoLinks.length) {
-    chrome.extension.sendRequest("email", function(email) {
-      var createPart = function(part, prefix, isAddress, useSemicolon) {
-        if (!part) {
-          return "";
-        }
-        if (isAddress) {
-          part = part.replace(/(^|\,)[^\,]*\<(.+?\@.+?\..+?)\>/g, "$1$2");
-        }
-        if (useSemicolon) {
-          part = part.replace(/\,/g, ';');
-        }
-        return (prefix || "") + window.escape(part);
-      };
+    var openMailtoLink = function(e) {
+      chrome.extension.sendRequest("email", function(email) {
+        var createPart = function(part, prefix, isAddress, useSemicolon) {
+          if (!part) {
+            return "";
+          }
+          if (isAddress) {
+            part = part.replace(/(^|\,)[^\,]*\<(.+?\@.+?\..+?)\>/g, "$1$2");
+          }
+          if (useSemicolon) {
+            part = part.replace(/\,/g, ';');
+          }
+          return (prefix || "") + window.escape(part);
+        };
 
-      var mailto;
-      var i;
-      for (mailto = 0; mailto < mailtoLinks.length; mailto++) {
-        var match = mailtoLinks[mailto].href.match(/^mailto\:(.+)$/i);
+        var i;
+        var match = e.target.href.match(/^mailto\:(.+)$/i);
         if (!match) {
-          continue;
+          return;
         }
 
         var queryparts = {};
@@ -86,9 +85,13 @@ window.addEventListener("load", function() {
             break;
         }
 
-        link = link.replace("'", '"');
-        mailtoLinks[mailto].setAttribute("onclick", "window.open('" + link + "', '_new');return false;");
-      }
-    });
+        window.open(link);
+      });
+      e.preventDefault();
+    };
+
+    for (i = 0; i < mailtoLinks.length; i++) {
+      mailtoLinks[i].addEventListener('click', openMailtoLink);
+    }
   }
 });
