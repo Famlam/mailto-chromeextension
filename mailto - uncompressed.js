@@ -83,6 +83,15 @@ window.addEventListener("load", function() {
             var zoholink = createPart(queryparts.to, "", true);
             link = "https://zmail.zoho.com/mail/compose.do?extsrc=mailto&mode=compose&tp=zb&ct=" + zoholink;
             break;
+          case "fastmail":
+            // to cc bcc subject body
+            var fastmaillink = createPart(queryparts.to, "", true);
+            fastmaillink += createPart(queryparts.cc, "&cc=", true);
+            fastmaillink += createPart(queryparts.bcc, "&bcc=", true);
+            fastmaillink += createPart(queryparts.subject, "&subject=");
+            fastmaillink += createPart(queryparts.body, "&body=");
+            link = "http://ssl.fastmail.fm/action/compose/?to=" + fastmaillink;
+            break;
         }
 
         window.open(link);
