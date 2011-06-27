@@ -13,8 +13,8 @@
     </style>
   </head>
   <body>
-    <a title="Fastmail Gmail Hotmail YMail Zoho" href="mailto:a@a.a"></a><br/>
-    <a title="Fastmail Gmail Hotmail YMail Zoho" href="mailto:a@a.a?to=b@b.b"></a><br/>
+    <a title="Fastmail Gmail Hotmail YMail Zoho" href="mailto:a@a.a"><b style="font-weight:normal;"><i style="font-style:normal;">a@a.a</i></b></a><br/>
+    <a title="Fastmail Gmail Hotmail YMail Zoho" href="mailto:a@a.a?to=b@b.b"><i style="font-style:normal;">a@a.a?to=b@b.b</i></a><br/>
     <a title="Fastmail Gmail Hotmail YMail" href="mailto:a@a.a?SUBJECT=b"></a><br/>
     <a title="Fastmail Gmail Hotmail YMail" href="MAILTO:a@a.a?CC=b@b.b"></a><br/>
     <a title="Fastmail Gmail YMail" href="mailto:a@a.a?BCC=b@b.b"></a><br/>
@@ -27,7 +27,7 @@
     <a title="Fastmail Gmail Hotmail (YMail)" href="mailto:%22a%5C%5Cb%22%20%3Cemail1%40site.com%3E%2C%20email2%40site.com?to=&to=email3%40site.com%2C%20email4%40site.com&to=email5%40site.com%2C%20email6%40site.com&to=&to=&subject=You%20should%20not%20see%20me%2E&subject=last%20call%20for%20cats%20%26%20dogs%2E&cc=%22a%5C%5Cb%22%20%3Csomeone1%40site.com%3E%2C%20someone2%40site.com&cc=&cc=someone3%40site.com%2C%20someone4%40site.com%2C%20%22foo%20%5C%22bar%5C%22%22%20%3Cfoo%40bar%2Ecom%3E&cc=&cc="></a><br/>
     <script>
       var links = document.getElementsByTagName("a");
-      for (var i = 0; i<links.length; i++)
+      for (var i = 2; i<links.length; i++)
         links[i].innerText = links[i].href.substr(7).replace(/^(.{128}).*/i, "$1...");
     </script>
   </body>

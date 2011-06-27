@@ -25,12 +25,16 @@ window.addEventListener("load", function() {
           return (prefix || "") + window.escape(part);
         };
 
-        var i;
-        var match = e.target.href.match(/^mailto\:(.+)$/i);
+        var target = e.target;
+        while (!target.href && target.parentNode) {
+          target = target.parentNode;
+        }
+        var match = (target.href || "").match(/^mailto\:(.+)$/i);
         if (!match) {
           return;
         }
 
+        var i;
         var queryparts = {};
         var params = ("to=" + match[1]).replace(/\?/,'&').split('&');
         for (i = 0; i < params.length; i++) {
