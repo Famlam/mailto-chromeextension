@@ -57,29 +57,29 @@ window.addEventListener("load", function() {
           case "wlm":
           case "hotmail":
             // to cc subject body
-            var hotmaillink = "compose?To=";
-            hotmaillink += createPart(queryparts.to, "", true, true);
-            hotmaillink += createPart(queryparts.cc, "&CC=", true, true);
-            hotmaillink += createPart(queryparts.subject, "&subject=");
-            hotmaillink += createPart(queryparts.body, "&body=");
+            var hotmaillink = "compose?To=" +
+              createPart(queryparts.to, "", true, true) +
+              createPart(queryparts.cc, "&CC=", true, true) +
+              createPart(queryparts.subject, "&subject=") +
+              createPart(queryparts.body, "&body=");
             link = "http://mail.live.com/?rru=" + window.escape(hotmaillink);
             break;
           case "gmail":
             // to cc bcc subject body
-            var gmaillink = createPart(queryparts.to, "", true);
-            gmaillink += createPart(queryparts.cc, "&cc=", true);
-            gmaillink += createPart(queryparts.bcc, "&bcc=", true);
-            gmaillink += createPart(queryparts.subject, "&su=");
-            gmaillink += createPart(queryparts.body, "&body=");
+            var gmaillink = createPart(queryparts.to, "", true) +
+              createPart(queryparts.cc, "&cc=", true) +
+              createPart(queryparts.bcc, "&bcc=", true) +
+              createPart(queryparts.subject, "&su=") +
+              createPart(queryparts.body, "&body=");
             link = "https://mail.google.com/mail/?view=cm&tf=1&to=" + gmaillink;
             break;
           case "ymail":
             // to cc bcc subject body
-            var ymaillink = createPart(queryparts.to, "", true);
-            ymaillink += createPart(queryparts.cc, "&Cc=", true);
-            ymaillink += createPart(queryparts.bcc, "&Bcc=", true);
-            ymaillink += createPart(queryparts.subject, "&Subject=");
-            ymaillink += createPart(queryparts.body, "&Body=");
+            var ymaillink = createPart(queryparts.to, "", true) +
+              createPart(queryparts.cc, "&Cc=", true) +
+              createPart(queryparts.bcc, "&Bcc=", true) +
+              createPart(queryparts.subject, "&Subject=") +
+              createPart(queryparts.body, "&Body=");
             link = "http://compose.mail.yahoo.com/?To=" + ymaillink;
             break;
           case "zoho":
@@ -89,11 +89,11 @@ window.addEventListener("load", function() {
             break;
           case "fastmail":
             // to cc bcc subject body
-            var fastmaillink = createPart(queryparts.to, "", true);
-            fastmaillink += createPart(queryparts.cc, "&cc=", true);
-            fastmaillink += createPart(queryparts.bcc, "&bcc=", true);
-            fastmaillink += createPart(queryparts.subject, "&subject=");
-            fastmaillink += createPart(queryparts.body, "&body=");
+            var fastmaillink = createPart(queryparts.to, "", true) +
+              createPart(queryparts.cc, "&cc=", true) +
+              createPart(queryparts.bcc, "&bcc=", true) +
+              createPart(queryparts.subject, "&subject=") +
+              createPart(queryparts.body, "&body=");
             link = "http://ssl.fastmail.fm/action/compose/?to=" + fastmaillink;
             break;
         }

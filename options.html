@@ -29,49 +29,59 @@
         margin-left: 75px;
       }
     </style>
-    <script>
-      var hideInterval = null;
-      function setSetting(e) {
-        localStorage.setItem(e.name, e.id);
-        document.getElementById(e.name).style.opacity = 1;
-        hideInterval = window.setInterval(hideSavedMessage, 200);
-      }
-      var hideSavedMessage = function() {
-        var i, teller = 0, items = document.getElementsByClassName("saved");
-        for (i=0; i<items.length; i++) {
-          if (!items[i].style || !items[i].style.opacity)
-            items[i].style.opacity = 0;
-          else if (items[i].style.opacity > 0)
-            items[i].style.opacity = items[i].style.opacity - 0.03;
-          if (items[i].style.opacity < 0.05)
-            items[i].style.opacity = 0;
-          else
-            teller++;
-        }
-        if (!teller)
-          clearInterval(hideInterval);
-      }
-    </script>
   </head>
   <body>
     <h1 i18n="options"></h1>
     <fieldset>
       <legend i18n="emailservice"></legend>
-      <input name="mail" type="radio" id="fastmail" onchange="setSetting(this);"/><label for="fastmail">Fastmail</label>
+      <input name="mail" type="radio" id="fastmail"/><label for="fastmail">Fastmail</label>
       <span class="saved" id="mail" i18n="saved"></span><br/>
-      <input name="mail" type="radio" id="gmail" onchange="setSetting(this);"/><label for="gmail">Gmail</label><br/>
-      <input name="mail" type="radio" id="hotmail" onchange="setSetting(this);"/><label for="hotmail">Hotmail / Windows Live Mail</label><br/>
-      <input name="mail" type="radio" id="ymail" onchange="setSetting(this);"/><label for="ymail">Yahoo mail</label><br/>
-      <input name="mail" type="radio" id="zoho" onchange="setSetting(this);"/><label for="zoho">Zoho mail</label><br/>
+      <input name="mail" type="radio" id="gmail"/><label for="gmail">Gmail</label><br/>
+      <input name="mail" type="radio" id="hotmail"/><label for="hotmail">Hotmail / Windows Live Mail</label><br/>
+      <input name="mail" type="radio" id="ymail"/><label for="ymail">Yahoo mail</label><br/>
+      <input name="mail" type="radio" id="zoho"/><label for="zoho">Zoho mail</label><br/>
     </fieldset>
     <script>
-      if (localStorage.mail)
+      // Set the option if it was already set before
+      if (localStorage.mail) {
         document.getElementById(localStorage.mail).checked = true;
+      }
+
+      var hideInterval = null, saveLabelFadeOut = function() {
+        // Fade out. If there are no more labels to fade out -> delete interval
+        var i, items = document.getElementsByClassName("saved"), fadingLabelsCount = 0;
+        for (i=0; i<items.length; i++) {
+          if (!items[i].style || !items[i].style.opacity || items[i].style.opacity < 0.05) {
+            items[i].style.opacity = 0;
+            if (!fadingLabelsCount && i === items.length - 1) {
+              window.clearInterval(hideInterval);
+              hideInterval = null;
+            }
+          } else {
+            items[i].style.opacity = items[i].style.opacity - 0.03;
+            fadingLabelsCount++;
+          }
+        }
+      };
+      var setSetting = function(e) {
+        // Save and show the correct 'saved' message
+        localStorage.setItem(e.target.name, e.target.id);
+        document.getElementById(e.target.name).style.opacity = 1;
+        if (!hideInterval) {
+          hideInterval = window.setInterval(saveLabelFadeOut, 200);
+        }
+      };
+      // Trigger when an input element changes
+      var i, items = document.getElementsByTagName("input");
+      for (i=0; i<items.length; i++) {
+        items[i].addEventListener("change", setSetting);
+      }
 
       // Translate a page into the users language
-      var i, items = document.querySelectorAll("[i18n]");
-      for (i=0; i<items.length; i++)
+      items = document.querySelectorAll("[i18n]");
+      for (i=0; i<items.length; i++) {
         items[i].innerText = chrome.i18n.getMessage(items[i].getAttribute("i18n"));
+      }
     </script>
   </body>
 </html>
