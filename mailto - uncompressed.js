@@ -1,9 +1,9 @@
 window.addEventListener("load", function() {
   var i;
   var mailtoLinks = [];
-  var allHref = document.querySelectorAll("[href]");
+  var allHref = document.querySelectorAll("[href], form[action]");
   for (i=0; i<allHref.length; i++) {
-    if (/^mailto\:.+/i.test(allHref[i].href)) {
+    if (/^mailto\:.+/i.test(allHref[i].href || allHref[i].action + "?")) {
       mailtoLinks.push(allHref[i]);
     }
   }
@@ -25,16 +25,28 @@ window.addEventListener("load", function() {
           return (prefix || "") + window.escape(part);
         };
 
-        var target = e.target;
-        while (!target.href && target.parentNode) {
-          target = target.parentNode;
+        var i;
+        var suggestedLink = "";
+        if (e.target.nodeName === "FORM") {
+          for (i=0; i<e.target.length; i++) {
+            var me = e.target[i];
+            if (me.name && me.value) {
+              suggestedLink += "&" + window.escape(me.name) + "=" + window.escape(me.value);
+            }
+          }
+          suggestedLink = suggestedLink.replace(/^\&/, "mailto:?");
+        } else {
+          var target = e.target;
+          while (!target.href && target.parentNode) {
+            target = target.parentNode;
+          }
+          suggestedLink = target.href;
         }
-        var match = (target.href || "").match(/^mailto\:(.+)$/i);
+        var match = (suggestedLink || "").match(/^mailto\:(.+)$/i);
         if (!match) {
           return;
         }
 
-        var i;
         var queryparts = {};
         var params = ("to=" + match[1]).replace(/\?/,'&').split('&');
         for (i = 0; i < params.length; i++) {
@@ -104,7 +116,7 @@ window.addEventListener("load", function() {
     };
 
     for (i = 0; i < mailtoLinks.length; i++) {
-      mailtoLinks[i].addEventListener('click', openMailtoLink);
+      mailtoLinks[i].addEventListener(mailtoLinks[i].nodeName === "FORM" ? "submit" : "click", openMailtoLink);
     }
   }
 });
