@@ -26,29 +26,28 @@ window.addEventListener("load", function() {
         };
 
         var i;
-        var suggestedLink = "";
+        var mailtoLink = "";
         if (e.target.nodeName === "FORM") {
           for (i=0; i<e.target.length; i++) {
             var me = e.target[i];
             if (me.name && me.value) {
-              suggestedLink += "&" + window.escape(me.name) + "=" + window.escape(me.value);
+              mailtoLink += "&" + window.escape(me.name) + "=" + window.escape(me.value);
             }
           }
-          suggestedLink = suggestedLink.replace(/^\&/, "mailto:?");
+          mailtoLink = mailtoLink.replace(/^\&/, "mailto:?");
         } else {
           var target = e.target;
           while (!target.href && target.parentNode) {
             target = target.parentNode;
           }
-          suggestedLink = target.href;
+          mailtoLink = target.href;
         }
-        var match = (suggestedLink || "").match(/^mailto\:(.+)$/i);
-        if (!match) {
+        if (!/^mailto\:.+/i.test(mailtoLink || "")) {
           return;
         }
 
         var queryparts = {};
-        var params = ("to=" + match[1]).replace(/\?/,'&').split('&');
+        var params = ("to=" + mailtoLink.substr(7)).replace(/\?/,'&').split('&');
         for (i = 0; i < params.length; i++) {
           var split = params[i].split('=');
           var what = split[0].toLowerCase();
