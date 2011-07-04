@@ -4,24 +4,23 @@
     <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
     <title>Testcases for mailto:* links</title>
     <style>
-      a {
+      a, a * {
         color: #222;
         font-family: Verdana,Arial,sans-serif;
         font-size: 12px;
         line-height:175%;
+        font-weight: normal;
+        font-style:normal;
       }
-      form :not(button) {
+      form :not(button):not([type="submit"]) {
         display:none;
       }
     </style>
   </head>
   <body>
-    <a title="Fastmail Gmail Hotmail YMail Zoho" href="mailto:a@a.a"><b style="font-weight:normal;"><i style="font-style:normal;">a@a.a</i></b></a><br/>
-    <a title="Fastmail Gmail Hotmail YMail Zoho" href="mailto:a@a.a?to=b@b.b"><i style="font-style:normal;">a@a.a?to=b@b.b</i></a><br/>
+    <a title="Fastmail Gmail Hotmail YMail Zoho" href="mailto:a@a.a"><b><i>a@a.a</i></b></a><br/>
+    <a title="Fastmail Gmail Hotmail YMail Zoho" href="mailto:a@a.a?to=b@b.b"><i>a@a.a?to=b@b.b</i></a><br/>
     <a title="Fastmail Gmail Hotmail YMail" href="mailto:a@a.a?SUBJECT=b"></a><br/>
-    <a title="Fastmail Gmail Hotmail YMail" href="MAILTO:a@a.a?CC=b@b.b"></a><br/>
-    <a title="Fastmail Gmail YMail" href="mailto:a@a.a?BCC=b@b.b"></a><br/>
-    <a title="Fastmail Gmail Hotmail YMail" href="mailto:a@a.a?subject=c&body=d"></a><br/>
     <a title="Fastmail Gmail Hotmail YMail Zoho" href="mailto:a@a.a,b b <b@b.b>,c@c.c"></a><br/>
     <a title="Fastmail Gmail (Hotmail) YMail" href="mailto:a@a.a?bcc=b@b.b&cc=c@c.c,d@d.d&subject=e e&body=f f"></a><br/>
     <a title="Fastmail Gmail Hotmail YMail" href="mailto:?subject=a%20a&body=b%3Db"></a><br/>
@@ -46,6 +45,8 @@ This is Line4</textarea><textarea name="body">This is Line5 &radic;
 This is Line6</textarea>
       <button title="Fastmail Gmail (Hotmail)">Compose form mailto link (6&times;to, 6&times;cc, 6&times;bcc, 1&times;subject 'correct=m &amp; m', 6 body lines)</button>
     </form>
+    <form action="mailto:a@a.a?to=ignore@b.b"><button title="Fastmail Gmail Hotmail YMail Zoho">1&times;to</button></form>
+    <form action="mailto:a@a.a?to=ignore@c.c"><input name="to" value="b@b.b"/><input title="Fastmail Gmail Hotmail YMail Zoho" type="submit" value="2&times;to" /></form>
     <script>
       var links = document.getElementsByTagName("a");
       for (var i = 2; i<links.length; i++)

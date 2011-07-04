@@ -28,13 +28,13 @@ window.addEventListener("load", function() {
         var i;
         var mailtoLink = "";
         if (e.target.nodeName === "FORM") {
+          mailtoLink = e.target.action.replace(/\?.*$/,"") + "?";
           for (i=0; i<e.target.length; i++) {
             var me = e.target[i];
             if (me.name && me.value) {
               mailtoLink += "&" + window.escape(me.name) + "=" + window.escape(me.value);
             }
           }
-          mailtoLink = mailtoLink.replace(/^\&/, "mailto:?");
         } else {
           var target = e.target;
           while (!target.href && target.parentNode) {
@@ -59,7 +59,7 @@ window.addEventListener("load", function() {
             }
           }
           if (split[1]) {
-            queryparts[what] = window.unescape(split[1] || "");
+            queryparts[what] = window.unescape(split[1]);
           }
         }
 
