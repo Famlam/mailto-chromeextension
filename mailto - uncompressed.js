@@ -3,7 +3,7 @@ window.addEventListener("load", function() {
   var mailtoLinks = [];
   var allHref = document.querySelectorAll("[href], form[action]");
   for (i=0; i<allHref.length; i++) {
-    if (/^mailto\:.+/i.test(allHref[i].href || allHref[i].action + "?")) {
+    if (/^mailto\:/i.test(allHref[i].href || allHref[i].action)) {
       mailtoLinks.push(allHref[i]);
     }
   }
@@ -28,7 +28,7 @@ window.addEventListener("load", function() {
         var i;
         var mailtoLink = "";
         if (e.target.nodeName === "FORM") {
-          mailtoLink = e.target.action.replace(/\?.*$/,"") + "?";
+          mailtoLink = e.target.action.replace(/\?.*$/,"");
           for (i=0; i<e.target.length; i++) {
             var me = e.target[i];
             if (me.name && me.value) {
@@ -42,7 +42,7 @@ window.addEventListener("load", function() {
           }
           mailtoLink = target.href;
         }
-        if (!/^mailto\:.+/i.test(mailtoLink || "")) {
+        if (!/^mailto\:/i.test(mailtoLink || "")) {
           return;
         }
 
