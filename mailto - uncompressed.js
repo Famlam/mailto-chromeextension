@@ -12,31 +12,17 @@ window.addEventListener("load", function() {
   if (mailtoLinks.length) {
     var openMailtoLink = function(e) {
       chrome.extension.sendRequest("email", function(email) {
-        var createPart = function(part, prefix, isAddress, useSemicolon) {
-          if (!part) {
-            return "";
-          }
-          if (isAddress) {
-            part = part.replace(/(^|\,)[^\,]*\<(.+?\@.+?\..+?)\>/g, "$1$2");
-          }
-          if (useSemicolon) {
-            part = part.replace(/\,/g, ';');
-          }
-          return (prefix || "") + window.escape(part);
-        };
-
         var i;
         var mailtoLink = "";
-        if (e.target.nodeName === "FORM") {
-          mailtoLink = e.target.action.replace(/\?.*$/,"");
-          for (i=0; i<e.target.length; i++) {
-            var me = e.target[i];
-            if (me.name && me.value) {
-              mailtoLink += "&" + window.escape(me.name) + "=" + window.escape(me.value);
+        var target = e.target;
+        if (target.nodeName === "FORM") {
+          mailtoLink = target.action.replace(/\?.*$/,"");
+          for (i=0; i<target.length; i++) {
+            if (target[i].name && target[i].value) {
+              mailtoLink += "&" + window.escape(target[i].name) + "=" + window.escape(target[i].value);
             }
           }
         } else {
-          var target = e.target;
           while (!target.href && target.parentNode) {
             target = target.parentNode;
           }
@@ -63,53 +49,55 @@ window.addEventListener("load", function() {
           }
         }
 
-        var link = "";
+        var createPart = function(part, prefix, isAddress, useSemicolon) {
+          var result = "";
+          if (part && prefix !== undefined) {
+            result = part;
+            if (isAddress) {
+              result = result.replace(/(^|\,)[^\,]*\<(.+?\@.+?\..+?)\>/g, "$1$2");
+              if (useSemicolon) {
+                result = result.replace(/\,/g, ';');
+              }
+            }
+            result = prefix + window.escape(result);
+          }
+          return result;
+        };
+        var openLink = function(base, parts, prefixCC, prefixBCC, prefixSubject, prefixBody, useSemicolonAndEscape) {
+          var link = createPart(parts.to, "", true, useSemicolonAndEscape) +
+            createPart(parts.cc, prefixCC, true, useSemicolonAndEscape) +
+            createPart(parts.bcc, prefixBCC, true) +
+            createPart(parts.subject, prefixSubject) +
+            createPart(parts.body, prefixBody);
+          if (useSemicolonAndEscape) {
+            link = window.escape(link);
+          }
+          window.open(base + link);
+        };
+
         switch (email) {
           case "wlm":
           case "hotmail":
             // to cc subject body
-            var hotmaillink = "compose?To=" +
-              createPart(queryparts.to, "", true, true) +
-              createPart(queryparts.cc, "&CC=", true, true) +
-              createPart(queryparts.subject, "&subject=") +
-              createPart(queryparts.body, "&body=");
-            link = "http://mail.live.com/?rru=" + window.escape(hotmaillink);
+            openLink("http://mail.live.com/?rru=compose%3FTo%3D", queryparts, "&CC=", undefined, "&subject=", "&body=", true);
             break;
           case "gmail":
             // to cc bcc subject body
-            var gmaillink = createPart(queryparts.to, "", true) +
-              createPart(queryparts.cc, "&cc=", true) +
-              createPart(queryparts.bcc, "&bcc=", true) +
-              createPart(queryparts.subject, "&su=") +
-              createPart(queryparts.body, "&body=");
-            link = "https://mail.google.com/mail/?view=cm&tf=1&to=" + gmaillink;
+            openLink("https://mail.google.com/mail/?view=cm&tf=1&to=", queryparts, "&cc=", "&bcc=", "&su=", "&body=");
             break;
           case "ymail":
             // to cc bcc subject body
-            var ymaillink = createPart(queryparts.to, "", true) +
-              createPart(queryparts.cc, "&Cc=", true) +
-              createPart(queryparts.bcc, "&Bcc=", true) +
-              createPart(queryparts.subject, "&Subject=") +
-              createPart(queryparts.body, "&Body=");
-            link = "http://compose.mail.yahoo.com/?To=" + ymaillink;
+            openLink("http://compose.mail.yahoo.com/?To=", queryparts, "&Cc=", "&Bcc=", "&Subj=", "&Body=");
             break;
           case "zoho":
             // to
-            var zoholink = createPart(queryparts.to, "", true);
-            link = "https://zmail.zoho.com/mail/compose.do?extsrc=mailto&mode=compose&tp=zb&ct=" + zoholink;
+            openLink("https://zmail.zoho.com/mail/compose.do?extsrc=mailto&mode=compose&tp=zb&ct=", queryparts);
             break;
           case "fastmail":
             // to cc bcc subject body
-            var fastmaillink = createPart(queryparts.to, "", true) +
-              createPart(queryparts.cc, "&cc=", true) +
-              createPart(queryparts.bcc, "&bcc=", true) +
-              createPart(queryparts.subject, "&subject=") +
-              createPart(queryparts.body, "&body=");
-            link = "http://ssl.fastmail.fm/action/compose/?to=" + fastmaillink;
+            openLink("http://ssl.fastmail.fm/action/compose/?to=", queryparts, "&cc=", "&bcc=", "&subject=", "&body=");
             break;
         }
-
-        window.open(link);
       });
       e.preventDefault();
     };
