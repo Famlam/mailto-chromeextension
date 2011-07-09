@@ -3,7 +3,7 @@
      {
       "js": [ "mailto.js" ],
       "matches": [ "<all_urls>" ],
-      "run_at": "document_start",
+      "run_at": "document_end",
       "all_frames": true
      }
    ],
@@ -14,7 +14,7 @@
       "48": "icon48.png"
    },
    "name": "Mailto:",
-   "version": "1.9.0",
+   "version": "1.10.0",
    "background_page": "background.html",
    "options_page": "options.html",
    "default_locale": "en"
