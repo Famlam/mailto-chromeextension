@@ -2,26 +2,27 @@ var a = function(e) {
   var i;
   var mailtoLink = "";
   var target = e.target;
-  if (e.type === "submit") {
+  if (e.type === "click") {
+    while (!target.href && target.parentNode) {
+      target = target.parentNode;
+    }
+    mailtoLink = target.href;
+  } else if (target.action) {
     mailtoLink = target.action.replace(/\?.*$/,"");
     for (i=0; i<target.length; i++) {
       if (target[i].name && target[i].value) {
         mailtoLink += "&" + window.escape(target[i].name) + "=" + window.escape(target[i].value);
       }
     }
-  } else {
-    while (!target.href && target.parentNode) {
-      target = target.parentNode;
-    }
-    mailtoLink = target.href;
   }
-  if (!/^mailto\:/i.test(mailtoLink || "")) {
+  var regex = /^mailto\:(\/\/)?/i;
+  if (!mailtoLink || !regex.test(mailtoLink)) {
     return;
   }
 
   chrome.extension.sendRequest("email", function(email) {
     var queryparts = {};
-    var params = ("to=" + mailtoLink.replace(/mailto\:(\/\/)?/i, '')).replace('?', '&').split('&');
+    var params = ("to=" + mailtoLink.replace(regex, '')).replace('?', '&').split('&');
     for (i = 0; i < params.length; i++) {
       var split = params[i].split('=');
       var what = split[0].toLowerCase();
