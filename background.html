@@ -7,6 +7,7 @@
       // Handle a click on a mailto: link
       chrome.extension.onRequest.addListener(function(mailtoLink, sender, sendResponse) {
         var mailtoAddresses = {
+          aol: "http://mail.aol.com/33490-311/aim-6/en-us/mail/compose-message.aspx?to={to}&cc={cc}&bcc={bcc}&subject={subject}&body={body}",
           fastmail: "http://ssl.fastmail.fm/action/compose/?to={to}&cc={cc}&bcc={bcc}&subject={subject}&body={body}",
           gmail: "https://mail.google.com/mail/?view=cm&tf=1&to={to}&cc={cc}&bcc={bcc}&su={subject}&body={body}",
           hotmail: "http://mail.live.com/?rru=compose?To={to}&CC={cc}&subject={subject}&body={body}",
@@ -25,7 +26,7 @@
             continue;
           }
           var what = split[1].toLowerCase();
-          var newLine = (what === "body" && email !== "ymail") ? "\r\n" : "";
+          var newLine = (what === "body" && email !== "ymail" && email !== "aol") ? "\r\n" : "";
           var val = window.decodeURIComponent(split[2] || "").replace(/\r\n|\r|\n/g, newLine);
           if (queryparts[what]) {
             if (what === "to" || what === "bcc" || what === "cc") {
