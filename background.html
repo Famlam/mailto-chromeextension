@@ -68,7 +68,7 @@
       // On launch, check if an email provider was set
       if (!window.localStorage.mail) {
         window.open(chrome.extension.getURL('options.html'), "_blank",
-                    'scrollbars=0,location=0,resizable=0,width=450,height=200');
+                    'scrollbars=0,location=0,resizable=0,width=450,height=215');
       }
       else if (window.localStorage.mail === "wlm") {
         window.localStorage.mail = "hotmail"; //TEMP since 23-6-11
