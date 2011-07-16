@@ -8,10 +8,13 @@ var a = function(e) {
     }
     mailtoLink = target.href;
   } else if (target.action) {
-    mailtoLink = target.action.replace(/\?.*$/,"");
+    mailtoLink = target.action;
+    if (target.method !== "post") { 
+      mailtoLink = mailtoLink.replace(/\?.*$/,"");
+    }
     for (i=0; i<target.length; i++) {
-      if (target[i].name && target[i].value) {
-        mailtoLink += "&" + window.escape(target[i].name) + "=" + window.escape(target[i].value);
+      if (target[i].name && target[i].value && !target[i].disabled && !((target[i].type==="checkbox" || target[i].type==="radio") && !target[i].checked)) {
+        mailtoLink += "&" + window.encodeURIComponent(target[i].name) + "=" + window.encodeURIComponent(target[i].value);
       }
     }
   }

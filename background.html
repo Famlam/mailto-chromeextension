@@ -18,19 +18,28 @@
         var link = mailtoAddresses[email];
         var queryparts = {};
         var i;
-        var params = ("to=" + mailtoLink).replace('?', '&').split('&');
+        var params = ("to=" + mailtoLink.replace('?', '&')).split('&');
         for (i = 0; i < params.length; i++) {
-          var split = params[i].split('=');
-          var what = split[0].toLowerCase();
+          var split = params[i].match(/(\w+)\=(.*)/);
+          if (!split) {
+            continue;
+          }
+          var what = split[1].toLowerCase();
+          var newLine = (what === "body" && email !== "ymail") ? "\r\n" : "";
+          var val = window.decodeURIComponent(split[2] || "").replace(/\r\n|\r|\n/g, newLine);
           if (queryparts[what]) {
-            if (split[1] && (what === "to" || what === "bcc" || what === "cc")) {
-              split[1] = queryparts[what] + ", " + split[1];
+            if (what === "to" || what === "bcc" || what === "cc") {
+              if (val) {
+                val = queryparts[what] + ", " + val;
+              } else {
+                val = queryparts[what];
+              }
             } else if (what === "body") {
-              split[1] = queryparts[what] + "%0D%0A" + split[1];
+              val = queryparts[what] + newLine + val;
             }
           }
-          if (split[1]) {
-            queryparts[what] = window.unescape(split[1]);
+          if (split[2] !== undefined && split[2] !== null) {
+            queryparts[what] = val;
           }
         }
 
@@ -42,7 +51,7 @@
               result = result.replace(/\,/g, ';');
             }
           }
-          return window.escape(result);
+          return window.encodeURIComponent(result);
         };
 
         // Let the content script call window.open so it'll stay in incognito or non-incognito
