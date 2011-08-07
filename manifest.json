@@ -9,12 +9,12 @@
    ],
    "description": "__MSG_description__",
    "icons": {
-      "16": "icon16.png",
-      "48": "icon48.png",
-      "128": "icon128.png"
+      "16": "icon-16.png",
+      "48": "icon-48.png",
+      "128": "icon-128.png"
    },
    "name": "Mailto:",
-   "version": "1.14.0",
+   "version": "1.15.0",
    "background_page": "background.html",
    "options_page": "options.html",
    "default_locale": "en"

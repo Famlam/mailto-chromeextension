@@ -4,6 +4,42 @@
     <title>Mailto</title>
     <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
     <script type="text/javascript">
+      // In case it is Safari, perform some code conversions.
+      if (typeof safari !== "undefined") {
+        chrome = {
+          extension: {
+            getURL: function(path) { 
+              return safari.extension.baseURI + path;
+            },
+
+            onRequest: {
+              addListener: function(handler) {
+                safari.application.addEventListener("message", function(e) {
+                  if (e.name !== "req") {
+                    return;
+                  }
+                  handler(e.message.data, undefined, function(dataToSend) {
+                    var responseMessage = { callbackToken: e.message.callbackToken, data: dataToSend };
+                    e.target.page.dispatchMessage("resp", responseMessage);
+                  });
+                }, false);
+              }
+            }
+          }
+        };
+        window.open = function(url) {
+          safari.application.activeBrowserWindow.openTab().url = url;
+        };
+        // Open the options page when requested via the settings page
+        safari.extension.settings.addEventListener("change", function(e) {
+          if (e.key === 'openOptions' && e.newValue === true) {
+            safari.extension.settings.openOptions = false;
+            window.open(chrome.extension.getURL('options.html'));
+          }
+        }, false);
+      }
+    </script>
+    <script type="text/javascript">
       // Handle a click on a mailto: link
       chrome.extension.onRequest.addListener(function(mailtoLink, sender, sendResponse) {
         var mailtoAddresses = {
@@ -15,7 +51,7 @@
           zoho: "https://zmail.zoho.com/mail/compose.do?extsrc=mailto&mode=compose&tp=zb&ct={to}"
         };
 
-        var email = window.localStorage.mail || "gmail";
+        var email = window.localStorage.getItem("mail") || "gmail";
         var link = mailtoAddresses[email];
         var queryparts = {};
         var i;
@@ -66,12 +102,12 @@
       });
 
       // On launch, check if an email provider was set
-      if (!window.localStorage.mail) {
+      if (!window.localStorage.getItem("mail")) {
         window.open(chrome.extension.getURL('options.html'), "_blank",
                     'scrollbars=0,location=0,resizable=0,width=450,height=215');
       }
-      else if (window.localStorage.mail === "wlm") {
-        window.localStorage.mail = "hotmail"; //TEMP since 23-6-11
+      else if (window.localStorage.getItem("mail") === "wlm") {
+        window.localStorage.setItem("mail", "hotmail"); //TEMP since 23-6-11
       }
     </script>
   </head>
