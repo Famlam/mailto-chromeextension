@@ -18,5 +18,29 @@
   "restartBrowser": {
     "message": "Please restart your browser to apply these settings.",
     "description": "Safari users have to restart their browser in order to change settings"
+  },
+  "customURL": {
+    "message": "Custom URL",
+    "description": "Clicking this label allows users to use a custom URL"
+  },
+  "customEmailService": {
+    "message": "Custom email service",
+    "description": "Title of the block where users can enter custom URLs"
+  },
+  "add": {
+    "message": "Add",
+    "description": "Add the custom URL"
+  },
+  "customExplanation": {
+    "message": "Here you have to enter the full URL to the compose page of your email service. You can use {to}, {cc}, {bcc}, {subject} and {body} to specify where respectively the to, cc, bcc, subject and body of the message should be in the URL",
+    "description": "Explanation of the syntax for custom URLs. Do not translate these texts: {to} {cc} {bcc} {subject} {body}"
+  },
+  "change": {
+    "message": "change",
+    "description": "Change the custom URL"
+  },
+  "remove": {
+    "message": "remove",
+    "description": "Remove the custom URL"
   }
 }

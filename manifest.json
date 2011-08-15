@@ -14,7 +14,7 @@
       "128": "icon-128.png"
    },
    "name": "Mailto:",
-   "version": "1.15.0",
+   "version": "1.16.0",
    "background_page": "background.html",
    "options_page": "options.html",
    "default_locale": "en"

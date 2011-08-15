@@ -48,7 +48,8 @@
           gmail: "https://mail.google.com/mail/?view=cm&tf=1&to={to}&cc={cc}&bcc={bcc}&su={subject}&body={body}",
           hotmail: "http://mail.live.com/?rru=compose?To={to}&CC={cc}&subject={subject}&body={body}",
           ymail: "http://compose.mail.yahoo.com/?To={to}&Cc={cc}&Bcc={bcc}&Subj={subject}&Body={body}",
-          zoho: "https://zmail.zoho.com/mail/compose.do?extsrc=mailto&mode=compose&tp=zb&ct={to}"
+          zoho: "https://zmail.zoho.com/mail/compose.do?extsrc=mailto&mode=compose&tp=zb&ct={to}",
+          custom: window.localStorage.getItem("custom")
         };
 
         var email = window.localStorage.getItem("mail") || "gmail";
@@ -104,7 +105,7 @@
       // On launch, check if an email provider was set
       if (!window.localStorage.getItem("mail")) {
         window.open(chrome.extension.getURL('options.html'), "_blank",
-                    'scrollbars=0,location=0,resizable=0,width=450,height=215');
+                    'scrollbars=0,location=0,resizable=0,width=450,height=226');
       }
       else if (window.localStorage.getItem("mail") === "wlm") {
         window.localStorage.setItem("mail", "hotmail"); //TEMP since 23-6-11

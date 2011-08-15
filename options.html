@@ -12,6 +12,7 @@
         -webkit-border-radius: 4px;
         border: 1px solid #666666;
         background-color: #f8faff;
+        max-width: 100%;
       }
       legend {
         padding: 0 5px;
@@ -31,6 +32,24 @@
       #paypal {
         float: right;
         display: none;
+      }
+      #inputCustom {
+        width: 98%;
+        max-width: 500px;
+      }
+      #explainCustom, #addCustom, #removeCustom {
+        font-size:10px;
+        margin:3px;
+      }
+      #custom, #customLabel, #customURL, #removeCustom {
+        display: none;
+      }
+      #customLabel {
+        font-style: italic;
+        margin-right: 5px;
+      }
+      a {
+        color: blue;
       }
     </style>
     <script type="text/javascript">
@@ -100,13 +119,13 @@
 
         // The background page doesn't have direct access to localStorage changes
         // Therefore users must restart Safari first.
-        var handleSafariLocalStorageBug = function(e) {
+        var handleSafariLocalStorageBug = function() {
           var warning = window.document.createElement("p");
           warning.innerText = chrome.i18n.getMessage("restartBrowser");
           warning.setAttribute("style", "font-weight: bold; color: red");
           window.document.body.appendChild(warning);
           window.document.removeEventListener("change", handleSafariLocalStorageBug);
-        }
+        };
         window.document.addEventListener("change", handleSafariLocalStorageBug);
       }
     </script>
@@ -128,15 +147,44 @@
       <input name="mail" type="radio" id="hotmail"/><label for="hotmail">Hotmail / Windows Live Mail</label><br/>
       <input name="mail" type="radio" id="ymail"/><label for="ymail">Yahoo mail</label><br/>
       <input name="mail" type="radio" id="zoho"/><label for="zoho">Zoho mail</label><br/>
+      <input name="mail" type="radio" id="custom"/><label for="custom" id="customLabel"></label><a href="#customURL" id="addCustom"></a><a href="#" id="removeCustom" i18n="remove"></a>
+    </fieldset>
+
+    <fieldset id="customURL">
+      <legend i18n="customEmailService"></legend>
+      <input type="text" id="inputCustom" />
+      <input type="button" id="submitCustom" i18n-value="add" disabled="disabled"/><br/>
+      <p id="explainCustom" i18n="customExplanation"></p>
     </fieldset>
 
     <script>
       // Set the option if it was already set before
+      var initializeCustom = function() {
+        var custom = window.localStorage.getItem("custom");
+        if (custom) {
+          window.document.getElementById("custom").style.display = "inline-block";
+          window.document.getElementById("customLabel").style.display = "inline";
+          window.document.getElementById("customLabel").innerText = custom;
+          window.document.getElementById("removeCustom").style.display = "inline";
+          window.document.getElementById("addCustom").innerText = chrome.i18n.getMessage("change");
+          window.document.getElementById("inputCustom").value = custom;
+        } else {
+          window.document.getElementById("custom").style.display = "none";
+          window.document.getElementById("customLabel").style.display = "none";
+          window.document.getElementById("removeCustom").style.display = "none";
+          window.document.getElementById("addCustom").innerText = chrome.i18n.getMessage("customURL");
+          window.document.getElementById("inputCustom").value = "";
+        }
+        window.document.getElementById("addCustom").style.display = "inline";
+        window.document.getElementById("customURL").style.display = "none";
+      };
+      initializeCustom();
       if (window.localStorage.getItem("mail")) {
         window.document.getElementById(window.localStorage.getItem("mail")).checked = true;
         window.document.getElementById("paypal").style.display = "block";
       }
 
+      // ------ SAVING WHAT EMAIL CLIENT TO USE ------
       var hideInterval = null, saveLabelFadeOut = function() {
         // Fade out. If there are no more labels to fade out -> delete interval
         var i, items = window.document.getElementsByClassName("saved"), fadingLabelsCount = 0;
@@ -164,14 +212,72 @@
 
       // Trigger when an input element changes
       var i, items = window.document.getElementsByTagName("input");
-      for (i=1; i<items.length; i++) { // i=0 is paypal
-        items[i].addEventListener("change", setSetting);
+      for (i=0; i<items.length; i++) {
+        if (items[i].type === "radio") {
+          items[i].addEventListener("change", setSetting);
+        }
       }
 
+      // ------ CUSTOM URLS ------
+      // Validate the custom URL
+      var validateCustomURL = function() {
+        if (/^https?\:\/\/([a-z0-9\-_\xE3-\xFF]+\.)*[a-z0-9]+\/.*\{to\}/.test(window.document.getElementById("inputCustom").value)) {
+          window.document.getElementById("submitCustom").disabled = false;
+        } else {
+          window.document.getElementById("submitCustom").disabled = true;
+        }
+      };
+      window.document.getElementById("inputCustom").addEventListener("input", validateCustomURL);
+
+      // Save a custom URL
+      var addCustomURL = function() {
+        setSetting({target: {name: "mail", id: "custom"}});
+        window.document.getElementById("custom").checked = true;
+        window.localStorage.setItem("custom", window.document.getElementById("inputCustom").value);
+        if (typeof safari !== "undefined") {
+          handleSafariLocalStorageBug();
+        }
+        initializeCustom();
+      };
+      window.document.getElementById("inputCustom").addEventListener("keypress", function(e) {
+        if (e.keyCode === 13 && !window.document.getElementById("submitCustom").disabled) {
+          addCustomURL();
+          e.preventDefault();
+        }
+      });
+      window.document.getElementById("submitCustom").addEventListener("click", addCustomURL);
+
+      // Add, change or remove a custom URL
+      window.document.getElementById("addCustom").addEventListener("click", function() {
+        window.document.getElementById("customURL").style.display = "block";
+        this.style.display = "none";
+        validateCustomURL();
+        window.document.getElementById("inputCustom").focus();
+      });
+      window.document.getElementById("removeCustom").addEventListener("click", function() {
+        window.localStorage.removeItem("custom");
+        if (window.localStorage.getItem("mail") === "custom") {
+          window.localStorage.removeItem("mail");
+        }
+        window.document.getElementById("mail").style.opacity = 1;
+        if (!hideInterval) {
+          hideInterval = window.setInterval(saveLabelFadeOut, 200);
+        }
+        if (typeof safari !== "undefined") {
+          handleSafariLocalStorageBug();
+        }
+        initializeCustom();
+      });
+
+      // ------ FINISHING TOUCH ------
       // Translate a page into the users language
       items = window.document.querySelectorAll("[i18n]");
       for (i=0; i<items.length; i++) {
         items[i].innerText = chrome.i18n.getMessage(items[i].getAttribute("i18n"));
+      }
+      items = window.document.querySelectorAll("[i18n-value]");
+      for (i=0; i<items.length; i++) {
+        items[i].value = chrome.i18n.getMessage(items[i].getAttribute("i18n-value"));
       }
     </script>
   </body>
