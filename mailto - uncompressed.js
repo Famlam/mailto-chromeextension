@@ -13,8 +13,9 @@ var a = function(e) {
       mailtoLink = mailtoLink.replace(/\?.*$/,"");
     }
     for (i=0; i<target.length; i++) {
-      if (target[i].name && target[i].value && !target[i].disabled && !((target[i].type==="checkbox" || target[i].type==="radio") && !target[i].checked)) {
-        mailtoLink += "&" + window.encodeURIComponent(target[i].name) + "=" + window.encodeURIComponent(target[i].value);
+      var targ = target[i];
+      if (targ.name && targ.value && !targ.disabled && !((targ.type==="checkbox" || targ.type==="radio") && !targ.checked)) {
+        mailtoLink += "&" + window.encodeURIComponent(targ.name) + "=" + window.encodeURIComponent(targ.value);
       }
     }
   }
