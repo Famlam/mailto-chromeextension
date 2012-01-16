@@ -31,5 +31,5 @@ var a = function(e) {
   });
   e.preventDefault();
 };
-window.document.addEventListener("submit", a);
-window.document.addEventListener("click", a);
+window.document.addEventListener("submit", a, false);
+window.document.addEventListener("click", a, false);

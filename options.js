@@ -72,38 +72,110 @@ if (typeof safari !== "undefined") {
     warning.innerText = chrome.i18n.getMessage("restartBrowser");
     warning.setAttribute("style", "font-weight: bold; color: red");
     window.document.body.appendChild(warning);
-    window.document.removeEventListener("change", handleSafariLocalStorageBug);
+    window.document.removeEventListener("change", handleSafariLocalStorageBug, false);
     handleSafariLocalStorageBug.handled = true;
   };
   handleSafariLocalStorageBug.handled = false;
-  window.document.addEventListener("change", handleSafariLocalStorageBug);
+  window.document.addEventListener("change", handleSafariLocalStorageBug, false);
 }
 
+// ============================= END SAFARI CODE ============================= //
 
 
-// Set the option if it was already set before
-var initializeCustom = function() {
-  var custom = window.localStorage.getItem("custom");
-  if (custom) {
-    window.document.getElementById("custom").style.display = "inline-block";
-    window.document.getElementById("customLabel").style.display = "inline";
-    window.document.getElementById("customLabel").innerText = custom;
-    window.document.getElementById("removeCustom").style.display = "inline";
-    window.document.getElementById("addCustom").innerText = chrome.i18n.getMessage("change");
-    window.document.getElementById("inputCustom").value = custom;
+
+// ------ SHOWING AND EDITING THE LIST OF CUSTOM URLS ------
+var removeCustomURL = function(thisURL) {
+  thisURL = (typeof thisURL === "string" ? thisURL : this.previousElementSibling.previousElementSibling.innerText);
+  var customURLs = JSON.parse(window.localStorage.getItem("customURLs"));
+  var index = customURLs.indexOf(thisURL);
+  customURLs.splice(index, 1);
+  if (customURLs.length) {
+    window.localStorage.setItem("customURLs", JSON.stringify(customURLs));
   } else {
-    window.document.getElementById("custom").style.display = "none";
-    window.document.getElementById("customLabel").style.display = "none";
-    window.document.getElementById("removeCustom").style.display = "none";
-    window.document.getElementById("addCustom").innerText = chrome.i18n.getMessage("customURL");
-    window.document.getElementById("inputCustom").value = "";
+    window.localStorage.removeItem('customURLs');
   }
-  window.document.getElementById("addCustom").style.display = "inline";
+  if (window.localStorage.getItem('custom') === thisURL) {
+    window.localStorage.removeItem('custom');
+    if (window.localStorage.getItem('mail') === 'custom') {
+      window.localStorage.removeItem('mail');
+    }
+  }
+  window.document.getElementById("mail").style.opacity = 1;
+  if (!hideInterval) {
+    hideInterval = window.setInterval(saveLabelFadeOut, 200);
+  }
+  if (typeof safari !== "undefined") {
+    handleSafariLocalStorageBug();
+  }
+  initializeCustom();
+};
+var addNewCustomURL = function() {
+  window.document.getElementById("customURL").style.display = "block";
+  window.document.getElementById("addCustom").style.display = "none";
+  validateCustomURL();
+  window.document.getElementById("inputCustom").focus();
+};
+var changeCustomURL = function() {
+  window.document.getElementById("inputCustom").value = this.previousElementSibling.innerText;
+  removeCustomURL(this.previousElementSibling.innerText);
+  addNewCustomURL();
+};
+var customURLSelected = function() {
+  setSetting({target: {name: "mail", id: "custom"}});
+  window.localStorage.setItem('custom', this.nextElementSibling.innerText);
+};
+var initializeCustom = function() {
+  var customURLs = JSON.parse(window.localStorage.getItem("customURLs")) || [];
+  var emailArea = window.document.getElementById('customemailclients'), i, selected;
+  if (window.localStorage.getItem("mail") === 'custom') {
+    selected = window.localStorage.getItem('custom');
+  }
+  while (emailArea.firstChild) {
+    emailArea.removeChild(emailArea.firstChild);
+  }
+  for (i=0; i<customURLs.length; i++) {
+    var input = window.document.createElement('input');
+      input.setAttribute('name', 'mail');
+      input.setAttribute('type', 'radio');
+      input.setAttribute('id', 'custom' + i);
+      input.addEventListener('change', customURLSelected, false);
+    emailArea.appendChild(input);
+    var label = window.document.createElement('label');
+      label.setAttribute('for', 'custom' + i);
+      label.innerText = customURLs[i];
+    emailArea.appendChild(label);
+    var change = window.document.createElement('a');
+      change.setAttribute('href', '#customURL');
+      change.innerText = chrome.i18n.getMessage('change');
+      change.addEventListener('click', changeCustomURL, false);
+    emailArea.appendChild(change);
+    var remove = window.document.createElement('a');
+      remove.setAttribute('href', '#');
+      remove.innerText = chrome.i18n.getMessage('remove');
+      remove.addEventListener('click', removeCustomURL, false);
+    emailArea.appendChild(remove);
+    emailArea.appendChild(document.createElement('br'));
+
+    if (customURLs[i] === selected) {
+      input.checked = true;
+    }
+  }
+  var add = window.document.createElement('a');
+    add.setAttribute('href', '#customURL');
+    add.setAttribute('id', 'addCustom');
+    add.innerText = chrome.i18n.getMessage('customURL');
+    add.addEventListener('click', addNewCustomURL, false);
+  emailArea.appendChild(add);
   window.document.getElementById("customURL").style.display = "none";
 };
 initializeCustom();
+
+
 if (window.localStorage.getItem("mail")) {
-  window.document.getElementById(window.localStorage.getItem("mail")).checked = true;
+  var elem = window.document.getElementById(window.localStorage.getItem("mail"));
+  if (elem) {
+    elem.checked = true;
+  }
 }
 
 // ------ SAVING WHAT EMAIL CLIENT TO USE ------
@@ -135,8 +207,8 @@ var setSetting = function(e) {
 // Trigger when an input element changes
 var i, items = window.document.getElementsByTagName("input");
 for (i=0; i<items.length; i++) {
-  if (items[i].type === "radio") {
-    items[i].addEventListener("change", setSetting);
+  if (items[i].type === "radio" && items[i].parentNode.id !== "customemailclients") {
+    items[i].addEventListener("change", setSetting, false);
   }
 }
 
@@ -149,47 +221,33 @@ var validateCustomURL = function() {
     window.document.getElementById("submitCustom").disabled = true;
   }
 };
-window.document.getElementById("inputCustom").addEventListener("input", validateCustomURL);
+window.document.getElementById("inputCustom").addEventListener("input", validateCustomURL, false);
 
-// Save a custom URL
 var addCustomURL = function() {
   setSetting({target: {name: "mail", id: "custom"}});
-  window.document.getElementById("custom").checked = true;
-  window.localStorage.setItem("custom", window.document.getElementById("inputCustom").value);
+  var newURL = window.document.getElementById("inputCustom").value;
+  window.document.getElementById("inputCustom").value = "";
+  var customlist = JSON.parse(window.localStorage.getItem("customURLs")) || [];
+  if (customlist.indexOf(newURL) === -1) {
+    customlist.push(newURL);
+    customlist.sort();
+  }
+  window.localStorage.setItem('customURLs', JSON.stringify(customlist));
+  window.localStorage.setItem('custom', newURL);
   if (typeof safari !== "undefined") {
     handleSafariLocalStorageBug();
   }
   initializeCustom();
 };
+
 window.document.getElementById("inputCustom").addEventListener("keypress", function(e) {
   if (e.keyCode === 13 && !window.document.getElementById("submitCustom").disabled) {
     addCustomURL();
     e.preventDefault();
   }
-});
-window.document.getElementById("submitCustom").addEventListener("click", addCustomURL);
+}, false);
+window.document.getElementById("submitCustom").addEventListener("click", addCustomURL, false);
 
-// Add, change or remove a custom URL
-window.document.getElementById("addCustom").addEventListener("click", function() {
-  window.document.getElementById("customURL").style.display = "block";
-  this.style.display = "none";
-  validateCustomURL();
-  window.document.getElementById("inputCustom").focus();
-});
-window.document.getElementById("removeCustom").addEventListener("click", function() {
-  window.localStorage.removeItem("custom");
-  if (window.localStorage.getItem("mail") === "custom") {
-    window.localStorage.removeItem("mail");
-  }
-  window.document.getElementById("mail").style.opacity = 1;
-  if (!hideInterval) {
-    hideInterval = window.setInterval(saveLabelFadeOut, 200);
-  }
-  if (typeof safari !== "undefined") {
-    handleSafariLocalStorageBug();
-  }
-  initializeCustom();
-});
 
 // ------ FINISHING TOUCH ------
 // Translate a page into the users language
@@ -202,3 +260,5 @@ for (i=0; i<items.length; i++) {
     items[i].innerText = translation;
   }
 }
+
+window.document.getElementById('explainCustom').innerHTML = window.document.getElementById('explainCustom').innerText.replace(/(\{\w+\})/g, '<b><i>$1</i></b>'); 

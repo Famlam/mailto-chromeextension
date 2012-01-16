@@ -5,7 +5,7 @@
 	<key>Author</key>
 	<string>Famlam</string>
 	<key>Builder Version</key>
-	<string>534.50</string>
+	<string>534.52.7</string>
 	<key>CFBundleDisplayName</key>
 	<string>mailto:</string>
 	<key>CFBundleIdentifier</key>
@@ -13,9 +13,9 @@
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundleShortVersionString</key>
-	<string>1.17.0</string>
+	<string>1.18.0</string>
 	<key>CFBundleVersion</key>
-	<string>1.17.0</string>
+	<string>1.18.0</string>
 	<key>Chrome</key>
 	<dict>
 		<key>Global Page</key>

@@ -30,14 +30,11 @@ h1 {
   width: 98%;
   max-width: 500px;
 }
-#explainCustom, #addCustom, #removeCustom {
-  font-size:10px;
-  margin:3px;
+#explainCustom, #customemailclients a {
+  font-size: 10px;
+  margin: 3px;
 }
-#custom, #customLabel, #customURL, #removeCustom {
-  display: none;
-}
-#customLabel {
+#customemailclients label {
   font-style: italic;
   margin-right: 5px;
 }

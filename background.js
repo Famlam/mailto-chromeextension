@@ -104,3 +104,6 @@ if (!window.localStorage.getItem("mail")) {
 else if (window.localStorage.getItem("mail") === "wlm") {
   window.localStorage.setItem("mail", "hotmail"); //TEMP since 23-6-11
 }
+if (window.localStorage.getItem("custom") && !window.localStorage.getItem("customURLs")) {
+  window.localStorage.setItem("customURLs", JSON.stringify([window.localStorage.getItem("custom")])); //TEMP since 16-1-12
+}
