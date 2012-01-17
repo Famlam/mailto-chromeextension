@@ -45,6 +45,43 @@ var onRequestHandler = function(mailtoLink, sender, sendResponse) {
     custom: window.localStorage.getItem("custom")
   };
 
+  if (window.localStorage.getItem('askAlways')) {
+    var wnd = window.open(chrome.extension.getURL('options.html'), "_blank",
+              'scrollbars=0,location=0,resizable=0,width=450,height=226');
+    wnd.mailtoLink = mailtoLink;
+    wnd.sR = sendResponse;
+    wnd.addEventListener('load', function() {
+      var stylesheet = wnd.document.createElement('link');
+      stylesheet.setAttribute('rel', 'stylesheet');
+      stylesheet.setAttribute('type', 'text/css');
+      stylesheet.setAttribute('href', 'askforclient.css');
+      wnd.document.head.appendChild(stylesheet);
+      wnd.document.getElementById('h1title').innerText = 'Mailto:';
+      wnd.document.title = wnd.chrome.i18n.getMessage('emailservice');
+      var i, radiobuttons = wnd.document.getElementsByName("mail");
+      var currentMail = window.localStorage.mail;
+      for (i=0; i<radiobuttons.length; i++) {
+        radiobuttons[i].checked = false;
+        radiobuttons[i].addEventListener('change', function() {
+          window.localStorage.removeItem('askAlways');
+          onRequestHandler(wnd.mailtoLink, sender, wnd.sR);
+          window.localStorage.setItem('askAlways', 'alwaysask');
+          if (currentMail) {
+            window.localStorage.setItem('mail', currentMail);
+          } else {
+            window.localStorage.removeItem('mail');
+          }
+          wnd.close();
+        }, false);
+      }
+      wnd.setTimeout(function() {
+        wnd.sR();
+        wnd.close();
+      }, 60000);
+    }, false);
+    return;
+  }
+
   var email = window.localStorage.getItem("mail") || "gmail";
   var link = mailtoAddresses[email];
   var queryparts = {};

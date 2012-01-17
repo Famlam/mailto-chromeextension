@@ -42,5 +42,13 @@
   "remove": {
     "message": "verwijder",
     "description": "Remove the custom URL"
+  },
+  "multipleaccounts": {
+    "message": "Meerdere accounts",
+    "description": "Title of the block where users can check the option to always ask what client to use"
+  },
+  "alwaysask": {
+    "message": "Vraag me elke keer welke emaildienst ik wilt gebruiken",
+    "description": "The option to always ask what client to use"
   }
 }

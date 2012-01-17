@@ -14,7 +14,7 @@
       "128": "icon-128.png"
    },
    "name": "Mailto:",
-   "version": "1.18.0",
+   "version": "1.19.0",
    "background_page": "background.html",
    "content_security_policy": "default-src 'self' ",
    "options_page": "options.html",

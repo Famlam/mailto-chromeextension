@@ -42,5 +42,13 @@
   "remove": {
     "message": "remove",
     "description": "Remove the custom URL"
+  },
+  "multipleaccounts": {
+    "message": "Multiple accounts",
+    "description": "Title of the block where users can check the option to always ask what client to use"
+  },
+  "alwaysask": {
+    "message": "Ask me every time which email service should be used",
+    "description": "The option to always ask what client to use"
   }
 }

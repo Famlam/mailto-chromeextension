@@ -77,10 +77,12 @@ if (typeof safari !== "undefined") {
   };
   handleSafariLocalStorageBug.handled = false;
   window.document.addEventListener("change", handleSafariLocalStorageBug, false);
+  
+  // Safari doesn't return the window object for wnd = window.open().
+  window.document.getElementById('askMeEveryTime').style.display = 'none';
 }
 
 // ============================= END SAFARI CODE ============================= //
-
 
 
 // ------ SHOWING AND EDITING THE LIST OF CUSTOM URLS ------
@@ -247,6 +249,18 @@ window.document.getElementById("inputCustom").addEventListener("keypress", funct
   }
 }, false);
 window.document.getElementById("submitCustom").addEventListener("click", addCustomURL, false);
+
+
+// ------ THE ASK ME EVERY TIME OPTION ------
+window.document.getElementById("alwaysask").addEventListener("change", function(e) {
+  setSetting(e);
+  if (!e.target.checked) {
+    window.localStorage.removeItem('askAlways');
+  }
+}, false);
+if (window.localStorage.getItem('askAlways')) {
+  window.document.getElementById("alwaysask").checked = true;
+}
 
 
 // ------ FINISHING TOUCH ------
