@@ -45,7 +45,14 @@ var onRequestHandler = function(mailtoLink, sender, sendResponse) {
     custom: window.localStorage.getItem("custom")
   };
 
-  if (window.localStorage.getItem('askAlways')) {
+  var email = window.localStorage.getItem("mail");
+  var link = mailtoAddresses[email];
+  if (!link && typeof safari !== "undefined") {
+    email = 'gmail';
+    link = mailtoAddresses['gmail'];
+  }
+  
+  if (window.localStorage.getItem('askAlways') || !link) {
     var wnd = window.open(chrome.extension.getURL('options.html'), "_blank",
               'scrollbars=0,location=0,resizable=0,width=450,height=226');
     wnd.mailtoLink = mailtoLink;
@@ -59,13 +66,16 @@ var onRequestHandler = function(mailtoLink, sender, sendResponse) {
       wnd.document.getElementById('h1title').innerText = 'Mailto:';
       wnd.document.title = wnd.chrome.i18n.getMessage('emailservice');
       var i, radiobuttons = wnd.document.getElementsByName("mail");
-      var currentMail = window.localStorage.mail;
+      var currentMail = window.localStorage.getItem('mail');
+      var currentAsk = window.localStorage.getItem('askAlways');
       for (i=0; i<radiobuttons.length; i++) {
         radiobuttons[i].checked = false;
         radiobuttons[i].addEventListener('change', function() {
           window.localStorage.removeItem('askAlways');
           onRequestHandler(wnd.mailtoLink, sender, wnd.sR);
-          window.localStorage.setItem('askAlways', 'alwaysask');
+          if (currentAsk) {
+            window.localStorage.setItem('askAlways', 'alwaysask');
+          }
           if (currentMail) {
             window.localStorage.setItem('mail', currentMail);
           } else {
@@ -82,8 +92,6 @@ var onRequestHandler = function(mailtoLink, sender, sendResponse) {
     return;
   }
 
-  var email = window.localStorage.getItem("mail") || "gmail";
-  var link = mailtoAddresses[email];
   var queryparts = {};
   var i;
   var params = ("to=" + mailtoLink.replace('?', '&')).split('&');
@@ -134,12 +142,9 @@ var onRequestHandler = function(mailtoLink, sender, sendResponse) {
 chrome.extension.onRequest.addListener(onRequestHandler);
 
 // On launch, check if an email provider was set
-if (!window.localStorage.getItem("mail")) {
+if (!window.localStorage.getItem("mail") && !window.localStorage.getItem("askAlways")) {
   window.open(chrome.extension.getURL('options.html'), "_blank",
               'scrollbars=0,location=0,resizable=0,width=450,height=226');
-}
-else if (window.localStorage.getItem("mail") === "wlm") {
-  window.localStorage.setItem("mail", "hotmail"); //TEMP since 23-6-11
 }
 if (window.localStorage.getItem("custom") && !window.localStorage.getItem("customURLs")) {
   window.localStorage.setItem("customURLs", JSON.stringify([window.localStorage.getItem("custom")])); //TEMP since 16-1-12
