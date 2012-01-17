@@ -78,7 +78,8 @@ if (typeof safari !== "undefined") {
   handleSafariLocalStorageBug.handled = false;
   window.document.addEventListener("change", handleSafariLocalStorageBug, false);
   
-  // Safari doesn't return the window object for wnd = window.open().
+  // Safari doesn't return the window object for the window.open alternative,
+  // and window.open isn't accessible in the background page.
   window.document.getElementById('askMeEveryTime').style.display = 'none';
 }
 
