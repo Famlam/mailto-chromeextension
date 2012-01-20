@@ -1,7 +1,8 @@
 var a = function(e) {
-  var i;
-  var mailtoLink = "";
-  var target = e.target;
+  var i,
+      mailtoLink = "",
+      target = e.target,
+      regex = /^mailto\:(\/\/)?/i;
   if (e.type === "click") {
     while (!target.href && target.parentNode) {
       target = target.parentNode;
@@ -15,11 +16,10 @@ var a = function(e) {
     for (i=0; i<target.length; i++) {
       var targ = target[i];
       if (targ.name && targ.value && !targ.disabled && !((targ.type==="checkbox" || targ.type==="radio") && !targ.checked)) {
-        mailtoLink += "&" + window.encodeURIComponent(targ.name) + "=" + window.encodeURIComponent(targ.value);
+        mailtoLink += "&" + encodeURIComponent(targ.name) + "=" + encodeURIComponent(targ.value);
       }
     }
   }
-  var regex = /^mailto\:(\/\/)?/i;
   if (!mailtoLink || !regex.test(mailtoLink)) {
     return;
   }
@@ -31,5 +31,5 @@ var a = function(e) {
   });
   e.preventDefault();
 };
-window.document.addEventListener("submit", a, false);
-window.document.addEventListener("click", a, false);
+document.addEventListener("submit", a, false);
+document.addEventListener("click", a, false);

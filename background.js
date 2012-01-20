@@ -42,17 +42,17 @@ var onRequestHandler = function(mailtoLink, sender, sendResponse) {
     hotmail: "http://mail.live.com/?rru=compose?To={to}&CC={cc}&subject={subject}&body={body}",
     ymail: "http://compose.mail.yahoo.com/?To={to}&Cc={cc}&Bcc={bcc}&Subj={subject}&Body={body}",
     zoho: "https://zmail.zoho.com/mail/compose.do?extsrc=mailto&mode=compose&tp=zb&ct={to}",
-    custom: window.localStorage.getItem("custom")
+    custom: localStorage.getItem("custom")
   };
 
-  var email = window.localStorage.getItem("mail");
+  var email = localStorage.getItem("mail");
   var link = mailtoAddresses[email];
   if (!link && typeof safari !== "undefined") {
     email = 'gmail';
-    link = mailtoAddresses['gmail'];
+    link = mailtoAddresses.gmail;
   }
   
-  if (window.localStorage.getItem('askAlways') || !link) {
+  if (localStorage.getItem('askAlways') || !link) {
     var wnd = window.open(chrome.extension.getURL('options.html'), "_blank",
               'scrollbars=0,location=0,resizable=0,width=450,height=226');
     wnd.mailtoLink = mailtoLink;
@@ -66,23 +66,24 @@ var onRequestHandler = function(mailtoLink, sender, sendResponse) {
       wnd.document.getElementById('h1title').innerText = 'Mailto:';
       wnd.document.title = wnd.chrome.i18n.getMessage('emailservice');
       var i, radiobuttons = wnd.document.getElementsByName("mail");
-      var currentMail = window.localStorage.getItem('mail');
-      var currentAsk = window.localStorage.getItem('askAlways');
+      var currentMail = localStorage.getItem('mail');
+      var currentAsk = localStorage.getItem('askAlways');
+      var onChangeHandler = function() {
+        localStorage.removeItem('askAlways');
+        onRequestHandler(wnd.mailtoLink, sender, wnd.sR);
+        if (currentAsk) {
+          localStorage.setItem('askAlways', 'alwaysask');
+        }
+        if (currentMail) {
+          localStorage.setItem('mail', currentMail);
+        } else {
+          localStorage.removeItem('mail');
+        }
+        wnd.close();
+      };
       for (i=0; i<radiobuttons.length; i++) {
         radiobuttons[i].checked = false;
-        radiobuttons[i].addEventListener('change', function() {
-          window.localStorage.removeItem('askAlways');
-          onRequestHandler(wnd.mailtoLink, sender, wnd.sR);
-          if (currentAsk) {
-            window.localStorage.setItem('askAlways', 'alwaysask');
-          }
-          if (currentMail) {
-            window.localStorage.setItem('mail', currentMail);
-          } else {
-            window.localStorage.removeItem('mail');
-          }
-          wnd.close();
-        }, false);
+        radiobuttons[i].addEventListener('change', onChangeHandler, false); 
       }
       wnd.setTimeout(function() {
         wnd.sR();
@@ -102,7 +103,7 @@ var onRequestHandler = function(mailtoLink, sender, sendResponse) {
     }
     var what = split[1].toLowerCase();
     var newLine = (what === "body" && email !== "ymail" && email !== "aol") ? "\r\n" : "";
-    var val = window.decodeURIComponent(split[2] || "").replace(/\r\n|\r|\n/g, newLine);
+    var val = decodeURIComponent(split[2] || "").replace(/\r\n|\r|\n/g, newLine);
     if (queryparts[what]) {
       if (what === "to" || what === "bcc" || what === "cc") {
         if (val) {
@@ -127,25 +128,25 @@ var onRequestHandler = function(mailtoLink, sender, sendResponse) {
         result = result.replace(/\,/g, ';');
       }
     }
-    return window.encodeURIComponent(result);
+    return encodeURIComponent(result);
   };
 
   // Let the content script call window.open so it'll stay in incognito or non-incognito
   sendResponse(
-    link.replace("{to}", prepareValue(queryparts.to, true)).
-      replace("{cc}", prepareValue(queryparts.cc, true)).
-      replace("{bcc}", prepareValue(queryparts.bcc, true)).
-      replace("{subject}", prepareValue(queryparts.subject)).
-      replace("{body}", prepareValue(queryparts.body))
+    link.replace(/\{to\}/g, prepareValue(queryparts.to, true)).
+      replace(/\{cc\}/g, prepareValue(queryparts.cc, true)).
+      replace(/\{bcc\}/g, prepareValue(queryparts.bcc, true)).
+      replace(/\{subject\}/g, prepareValue(queryparts.subject)).
+      replace(/\{body\}/g, prepareValue(queryparts.body))
   );
 };
 chrome.extension.onRequest.addListener(onRequestHandler);
 
 // On launch, check if an email provider was set
-if (!window.localStorage.getItem("mail") && !window.localStorage.getItem("askAlways")) {
+if (!localStorage.getItem("mail") && !localStorage.getItem("askAlways")) {
   window.open(chrome.extension.getURL('options.html'), "_blank",
               'scrollbars=0,location=0,resizable=0,width=450,height=226');
 }
-if (window.localStorage.getItem("custom") && !window.localStorage.getItem("customURLs")) {
-  window.localStorage.setItem("customURLs", JSON.stringify([window.localStorage.getItem("custom")])); //TEMP since 16-1-12
+if (localStorage.getItem("custom") && !localStorage.getItem("customURLs")) {
+  localStorage.setItem("customURLs", JSON.stringify([localStorage.getItem("custom")])); //TEMP since 16-1-12
 }

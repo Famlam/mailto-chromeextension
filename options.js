@@ -4,18 +4,18 @@ if (typeof safari !== "undefined") {
       getMessage: function(messageID, args) {
         var i;
         if (typeof chrome.i18n.strings === "undefined") {
-          var languages = [window.navigator.language.replace('-', '_')];
-          if (window.navigator.language.length > 2) {
-            languages.push(window.navigator.language.substring(0, 2));
+          var languages = [navigator.language.replace('-', '_')];
+          if (navigator.language.length > 2) {
+            languages.push(navigator.language.substring(0, 2));
           }
-          if (window.navigator.language !== "en") {
+          if (navigator.language !== "en") {
             languages.push("en");
           }
           chrome.i18n.strings = {};
 
           // Get the translation required and prepare it for being used.
           var fetchAndParse = function(locale) {
-            var xhr = new window.XMLHttpRequest();
+            var xhr = new XMLHttpRequest();
             xhr.open("GET", safari.extension.baseURI + "_locales/" + locale + "/messages.json", false);
             xhr.onreadystatechange = function() {
               if (this.readyState === 4 && this.responseText) {
@@ -68,19 +68,19 @@ if (typeof safari !== "undefined") {
     if (handleSafariLocalStorageBug.handled) {
       return;
     }
-    var warning = window.document.createElement("p");
+    var warning = document.createElement("p");
     warning.innerText = chrome.i18n.getMessage("restartBrowser");
     warning.setAttribute("style", "font-weight: bold; color: red");
-    window.document.body.appendChild(warning);
-    window.document.removeEventListener("change", handleSafariLocalStorageBug, false);
+    document.body.appendChild(warning);
+    document.removeEventListener("change", handleSafariLocalStorageBug, false);
     handleSafariLocalStorageBug.handled = true;
   };
   handleSafariLocalStorageBug.handled = false;
-  window.document.addEventListener("change", handleSafariLocalStorageBug, false);
+  document.addEventListener("change", handleSafariLocalStorageBug, false);
   
   // Safari doesn't return the window object for the window.open alternative,
   // and window.open isn't accessible in the background page.
-  window.document.getElementById('askMeEveryTime').style.display = 'none';
+  document.getElementById('askMeEveryTime').style.display = 'none';
 }
 
 // ============================= END SAFARI CODE ============================= //
@@ -89,23 +89,23 @@ if (typeof safari !== "undefined") {
 // ------ SHOWING AND EDITING THE LIST OF CUSTOM URLS ------
 var removeCustomURL = function(thisURL) {
   thisURL = (typeof thisURL === "string" ? thisURL : this.previousElementSibling.previousElementSibling.innerText);
-  var customURLs = JSON.parse(window.localStorage.getItem("customURLs"));
+  var customURLs = JSON.parse(localStorage.getItem("customURLs"));
   var index = customURLs.indexOf(thisURL);
   customURLs.splice(index, 1);
   if (customURLs.length) {
-    window.localStorage.setItem("customURLs", JSON.stringify(customURLs));
+    localStorage.setItem("customURLs", JSON.stringify(customURLs));
   } else {
-    window.localStorage.removeItem('customURLs');
+    localStorage.removeItem('customURLs');
   }
-  if (window.localStorage.getItem('custom') === thisURL) {
-    window.localStorage.removeItem('custom');
-    if (window.localStorage.getItem('mail') === 'custom') {
-      window.localStorage.removeItem('mail');
+  if (localStorage.getItem('custom') === thisURL) {
+    localStorage.removeItem('custom');
+    if (localStorage.getItem('mail') === 'custom') {
+      localStorage.removeItem('mail');
     }
   }
-  window.document.getElementById("mail").style.opacity = 1;
+  document.getElementById("mail").style.opacity = 1;
   if (!hideInterval) {
-    hideInterval = window.setInterval(saveLabelFadeOut, 200);
+    hideInterval = setInterval(saveLabelFadeOut, 200);
   }
   if (typeof safari !== "undefined") {
     handleSafariLocalStorageBug();
@@ -113,46 +113,46 @@ var removeCustomURL = function(thisURL) {
   initializeCustom();
 };
 var addNewCustomURL = function() {
-  window.document.getElementById("customURL").style.display = "block";
-  window.document.getElementById("addCustom").style.display = "none";
+  document.getElementById("customURL").style.display = "block";
+  document.getElementById("addCustom").style.display = "none";
   validateCustomURL();
-  window.document.getElementById("inputCustom").focus();
+  document.getElementById("inputCustom").focus();
 };
 var changeCustomURL = function() {
-  window.document.getElementById("inputCustom").value = this.previousElementSibling.innerText;
+  document.getElementById("inputCustom").value = this.previousElementSibling.innerText;
   removeCustomURL(this.previousElementSibling.innerText);
   addNewCustomURL();
 };
 var customURLSelected = function() {
   setSetting({target: {name: "mail", id: "custom"}});
-  window.localStorage.setItem('custom', this.nextElementSibling.innerText);
+  localStorage.setItem('custom', this.nextElementSibling.innerText);
 };
 var initializeCustom = function() {
-  var customURLs = JSON.parse(window.localStorage.getItem("customURLs")) || [];
-  var emailArea = window.document.getElementById('customemailclients'), i, selected;
-  if (window.localStorage.getItem("mail") === 'custom') {
-    selected = window.localStorage.getItem('custom');
+  var customURLs = JSON.parse(localStorage.getItem("customURLs")) || [];
+  var emailArea = document.getElementById('customemailclients'), i, selected;
+  if (localStorage.getItem("mail") === 'custom') {
+    selected = localStorage.getItem('custom');
   }
   while (emailArea.firstChild) {
     emailArea.removeChild(emailArea.firstChild);
   }
   for (i=0; i<customURLs.length; i++) {
-    var input = window.document.createElement('input');
+    var input = document.createElement('input');
       input.setAttribute('name', 'mail');
       input.setAttribute('type', 'radio');
       input.setAttribute('id', 'custom' + i);
       input.addEventListener('change', customURLSelected, false);
     emailArea.appendChild(input);
-    var label = window.document.createElement('label');
+    var label = document.createElement('label');
       label.setAttribute('for', 'custom' + i);
       label.innerText = customURLs[i];
     emailArea.appendChild(label);
-    var change = window.document.createElement('a');
+    var change = document.createElement('a');
       change.setAttribute('href', '#customURL');
       change.innerText = chrome.i18n.getMessage('change');
       change.addEventListener('click', changeCustomURL, false);
     emailArea.appendChild(change);
-    var remove = window.document.createElement('a');
+    var remove = document.createElement('a');
       remove.setAttribute('href', '#');
       remove.innerText = chrome.i18n.getMessage('remove');
       remove.addEventListener('click', removeCustomURL, false);
@@ -163,19 +163,19 @@ var initializeCustom = function() {
       input.checked = true;
     }
   }
-  var add = window.document.createElement('a');
+  var add = document.createElement('a');
     add.setAttribute('href', '#customURL');
     add.setAttribute('id', 'addCustom');
     add.innerText = chrome.i18n.getMessage('customURL');
     add.addEventListener('click', addNewCustomURL, false);
   emailArea.appendChild(add);
-  window.document.getElementById("customURL").style.display = "none";
+  document.getElementById("customURL").style.display = "none";
 };
 initializeCustom();
 
 
-if (window.localStorage.getItem("mail")) {
-  var elem = window.document.getElementById(window.localStorage.getItem("mail"));
+if (localStorage.getItem("mail")) {
+  var elem = document.getElementById(localStorage.getItem("mail"));
   if (elem) {
     elem.checked = true;
   }
@@ -184,12 +184,12 @@ if (window.localStorage.getItem("mail")) {
 // ------ SAVING WHAT EMAIL CLIENT TO USE ------
 var hideInterval = null, saveLabelFadeOut = function() {
   // Fade out. If there are no more labels to fade out -> delete interval
-  var i, items = window.document.getElementsByClassName("saved"), fadingLabelsCount = 0;
+  var i, items = document.getElementsByClassName("saved"), fadingLabelsCount = 0;
   for (i=0; i<items.length; i++) {
     if (!items[i].style || !items[i].style.opacity || items[i].style.opacity < 0.05) {
       items[i].style.opacity = 0;
       if (!fadingLabelsCount && i === items.length - 1) {
-        window.clearInterval(hideInterval);
+        clearInterval(hideInterval);
         hideInterval = null;
       }
     } else {
@@ -200,15 +200,15 @@ var hideInterval = null, saveLabelFadeOut = function() {
 };
 var setSetting = function(e) {
   // Save and show the correct 'saved' message
-  window.localStorage.setItem(e.target.name, e.target.id);
-  window.document.getElementById(e.target.name).style.opacity = 1;
+  localStorage.setItem(e.target.name, e.target.id);
+  document.getElementById(e.target.name).style.opacity = 1;
   if (!hideInterval) {
-    hideInterval = window.setInterval(saveLabelFadeOut, 200);
+    hideInterval = setInterval(saveLabelFadeOut, 200);
   }
 };
 
 // Trigger when an input element changes
-var i, items = window.document.getElementsByTagName("input");
+var i, items = document.getElementsByTagName("input");
 for (i=0; i<items.length; i++) {
   if (items[i].type === "radio" && items[i].parentNode.id !== "customemailclients") {
     items[i].addEventListener("change", setSetting, false);
@@ -218,55 +218,55 @@ for (i=0; i<items.length; i++) {
 // ------ CUSTOM URLS ------
 // Validate the custom URL
 var validateCustomURL = function() {
-  if (/^https?\:\/\/([a-z0-9\-_\xE3-\xFF]+\.)+[a-z0-9]+\/.*\{to\}/.test(window.document.getElementById("inputCustom").value)) {
-    window.document.getElementById("submitCustom").disabled = false;
+  if (/^https?\:\/\/([a-z0-9\-_\xE3-\xFF]+\.)+[a-z0-9]+\/.*\{to\}/.test(document.getElementById("inputCustom").value)) {
+    document.getElementById("submitCustom").disabled = false;
   } else {
-    window.document.getElementById("submitCustom").disabled = true;
+    document.getElementById("submitCustom").disabled = true;
   }
 };
-window.document.getElementById("inputCustom").addEventListener("input", validateCustomURL, false);
+document.getElementById("inputCustom").addEventListener("input", validateCustomURL, false);
 
 var addCustomURL = function() {
   setSetting({target: {name: "mail", id: "custom"}});
-  var newURL = window.document.getElementById("inputCustom").value;
-  window.document.getElementById("inputCustom").value = "";
-  var customlist = JSON.parse(window.localStorage.getItem("customURLs")) || [];
+  var newURL = document.getElementById("inputCustom").value;
+  document.getElementById("inputCustom").value = "";
+  var customlist = JSON.parse(localStorage.getItem("customURLs")) || [];
   if (customlist.indexOf(newURL) === -1) {
     customlist.push(newURL);
     customlist.sort();
   }
-  window.localStorage.setItem('customURLs', JSON.stringify(customlist));
-  window.localStorage.setItem('custom', newURL);
+  localStorage.setItem('customURLs', JSON.stringify(customlist));
+  localStorage.setItem('custom', newURL);
   if (typeof safari !== "undefined") {
     handleSafariLocalStorageBug();
   }
   initializeCustom();
 };
 
-window.document.getElementById("inputCustom").addEventListener("keypress", function(e) {
-  if (e.keyCode === 13 && !window.document.getElementById("submitCustom").disabled) {
+document.getElementById("inputCustom").addEventListener("keypress", function(e) {
+  if (e.keyCode === 13 && !document.getElementById("submitCustom").disabled) {
     addCustomURL();
     e.preventDefault();
   }
 }, false);
-window.document.getElementById("submitCustom").addEventListener("click", addCustomURL, false);
+document.getElementById("submitCustom").addEventListener("click", addCustomURL, false);
 
 
 // ------ THE ASK ME EVERY TIME OPTION ------
-window.document.getElementById("alwaysask").addEventListener("change", function(e) {
+document.getElementById("alwaysask").addEventListener("change", function(e) {
   setSetting(e);
   if (!e.target.checked) {
-    window.localStorage.removeItem('askAlways');
+    localStorage.removeItem('askAlways');
   }
 }, false);
-if (window.localStorage.getItem('askAlways')) {
-  window.document.getElementById("alwaysask").checked = true;
+if (localStorage.getItem('askAlways')) {
+  document.getElementById("alwaysask").checked = true;
 }
 
 
 // ------ FINISHING TOUCH ------
 // Translate a page into the users language
-items = window.document.querySelectorAll("[data-i18n]");
+items = document.querySelectorAll("[data-i18n]");
 for (i=0; i<items.length; i++) {
   var translation = chrome.i18n.getMessage(items[i].getAttribute("data-i18n"));
   if (items[i].value === "i18n") {
@@ -276,4 +276,4 @@ for (i=0; i<items.length; i++) {
   }
 }
 
-window.document.getElementById('explainCustom').innerHTML = window.document.getElementById('explainCustom').innerText.replace(/(\{\w+\})/g, '<b><i>$1</i></b>'); 
+document.getElementById('explainCustom').innerHTML = document.getElementById('explainCustom').innerText.replace(/(\{\w+\})/g, '<b><i>$1</i></b>'); 

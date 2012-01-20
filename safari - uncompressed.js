@@ -1,9 +1,9 @@
 chrome = {
   extension: {
     sendRequest: function(data, callback) {
-      var callbackToken = "c" + window.Date.now();
-      // Listen for a response for our specific request token.
-      var responseHandler = function(e) {
+      var callbackToken = "c" + Date.now(),
+      responseHandler = function(e) {
+        // Listen for a response for our specific request token.
         if (e.name !== "resp" || e.message.callbackToken !== callbackToken) {
           return;
         }
