@@ -1,22 +1,26 @@
 {
-   "content_scripts": [
-     {
+  "content_scripts": [
+    {
       "js": [ "mailto.js" ],
       "matches": [ "<all_urls>" ],
       "run_at": "document_end",
       "all_frames": true
-     }
-   ],
-   "description": "__MSG_description__",
-   "icons": {
-      "16": "icon-16.png",
-      "48": "icon-48.png",
-      "128": "icon-128.png"
-   },
-   "name": "Mailto:",
-   "version": "1.19.2",
-   "background_page": "background.html",
-   "content_security_policy": "default-src 'self' ",
-   "options_page": "options.html",
-   "default_locale": "en"
+    }
+  ],
+  "description": "__MSG_description__",
+  "icons": {
+    "16": "icon-16.png",
+    "48": "icon-48.png",
+    "128": "icon-128.png"
+  },
+  "name": "Mailto:",
+  "version": "1.19.3",
+  "background_page": "background.html",
+  "background": {
+    "scripts": ["background.js"]
+  },
+  "manifest_version": 2,
+  "content_security_policy": "default-src 'self' ",
+  "options_page": "options.html",
+  "default_locale": "en"
 }
