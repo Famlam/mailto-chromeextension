@@ -218,7 +218,7 @@ for (i=0; i<items.length; i++) {
 // ------ CUSTOM URLS ------
 // Validate the custom URL
 var validateCustomURL = function() {
-  if (/^https?\:\/\/([a-z0-9\-_\xE3-\xFF]+\.)+[a-z0-9]+\/.*\{to\}/.test(document.getElementById("inputCustom").value)) {
+  if (/^https?\:\/\/([a-z0-9\-_\xE3-\xFF]+\.)+[a-z0-9]+\/.*\{(to|url)\}/.test(document.getElementById("inputCustom").value)) {
     document.getElementById("submitCustom").disabled = false;
   } else {
     document.getElementById("submitCustom").disabled = true;

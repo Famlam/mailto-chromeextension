@@ -137,7 +137,8 @@ var onRequestHandler = function(mailtoLink, sender, sendResponse) {
       replace(/\{cc\}/g, prepareValue(queryparts.cc, true)).
       replace(/\{bcc\}/g, prepareValue(queryparts.bcc, true)).
       replace(/\{subject\}/g, prepareValue(queryparts.subject)).
-      replace(/\{body\}/g, prepareValue(queryparts.body))
+      replace(/\{body\}/g, prepareValue(queryparts.body)).
+      replace(/\{url\}/g, prepareValue('mailto:' + mailtoLink))
   );
 };
 chrome.extension.onRequest.addListener(onRequestHandler);

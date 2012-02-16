@@ -32,7 +32,7 @@
     "description": "Add the custom URL"
   },
   "customExplanation": {
-    "message": "Here you have to enter the full URL to the compose page of your email service. You can use {to}, {cc}, {bcc}, {subject} and {body} to specify where respectively the to, cc, bcc, subject and body of the message should be in the URL",
+    "message": "Here you have to enter the full URL to the compose page of your email service. You can use {to}, {cc}, {bcc}, {subject} and {body} to specify where respectively the to, cc, bcc, subject and body of the message should be in the URL, or {url} to insert the clicked link on that position",
     "description": "Explanation of the syntax for custom URLs. Do not translate these texts: {to} {cc} {bcc} {subject} {body}"
   },
   "change": {
