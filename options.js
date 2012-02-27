@@ -276,4 +276,9 @@ for (i=0; i<items.length; i++) {
   }
 }
 
-document.getElementById('explainCustom').innerHTML = document.getElementById('explainCustom').innerText.replace(/(\{\w+\})/g, '<b><i>$1</i></b>'); 
+document.getElementById('explainCustom').innerHTML = document.getElementById('explainCustom').innerText.replace("<a>", '<a href="#" id="explainLink">'); 
+if (document.getElementById('explainLink')) {
+  document.getElementById('explainLink').addEventListener("click", function() {
+    window.open('http://code.google.com/p/mailto-chromeextension/wiki/AddCustomUrl');
+  });
+}

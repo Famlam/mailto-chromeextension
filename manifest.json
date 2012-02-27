@@ -14,7 +14,7 @@
     "128": "icon-128.png"
   },
   "name": "Mailto:",
-  "version": "1.20.0",
+  "version": "1.21.0",
   "background_page": "background.html",
   "background": {
     "scripts": ["background.js"]

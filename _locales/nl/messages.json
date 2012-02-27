@@ -32,8 +32,8 @@
     "description": "Add the custom URL"
   },
   "customExplanation": {
-    "message": "Hier kun je de volledige URL naar de pagina waar je emails kunt creeren opgeven. Je kunt {to}, {cc}, {bcc}, {subject} en {body} gebruiken om aan te geven waar respectievelijk de ontvanger, cc, bcc, het onderwerp en het bericht in de URL moeten komen te staan, of {url} om de volledige link in te voegen.",
-    "description": "Explanation of the syntax for custom URLs. Do not translate these texts: {to} {cc} {bcc} {subject} {body}"
+    "message": "Hier kun je de volledige URL naar de pagina waar je emails kunt creeren opgeven. <a>Klik hier voor uitleg</a>",
+    "description": "Explanation of the syntax for custom URLs. Do not edit these texts: <a> and </a>"
   },
   "change": {
     "message": "wijzig",
