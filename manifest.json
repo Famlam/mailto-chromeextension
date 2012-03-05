@@ -14,12 +14,8 @@
     "128": "icon-128.png"
   },
   "name": "Mailto:",
-  "version": "1.21.0",
+  "version": "1.21.1",
   "background_page": "background.html",
-  "background": {
-    "scripts": ["background.js"]
-  },
-  "manifest_version": 2,
   "content_security_policy": "default-src 'self' ",
   "options_page": "options.html",
   "default_locale": "en"
