@@ -19,6 +19,9 @@ if (typeof safari !== "undefined") {
           }, false);
         }
       }
+    },
+    contextMenus: {
+      removeAll: function() {}
     }
   };
   window.open = function(url) {
@@ -142,6 +145,22 @@ var onRequestHandler = function(mailtoLink, sender, sendResponse) {
   );
 };
 chrome.extension.onRequest.addListener(onRequestHandler);
+
+var setContextMenu = function() {
+  if (localStorage.getItem('sendLinkPage')) {
+    chrome.contextMenus.create({title: chrome.i18n.getMessage('maillinkofthispage'),
+        onclick: function(info, tab) {
+          onRequestHandler('?subject=' + encodeURIComponent(tab.title) + '&body=' + encodeURIComponent(tab.url + '\n'), {tab: tab}, function(link) {
+            chrome.tabs.create({url: link});
+          });
+        }
+    });
+  } else {
+    chrome.contextMenus.removeAll();
+  }
+};
+setContextMenu();
+
 
 // On launch, check if an email provider was set
 if (!localStorage.getItem("mail") && !localStorage.getItem("askAlways")) {

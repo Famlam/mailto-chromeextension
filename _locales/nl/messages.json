@@ -50,5 +50,17 @@
   "alwaysask": {
     "message": "Vraag me elke keer welke emaildienst ik wilt gebruiken",
     "description": "The option to always ask what client to use"
+  },
+  "maillinkofpage": {
+    "message": "Pagina-adres verzenden",
+    "description": "Title of the block where users can check the option to mail the link of the current page"
+  },
+  "maillinkofthispage": {
+    "message": "Mail het adres van deze pagina",
+    "description": "Title of the context menu entry"
+  },
+  "maillinkofpagedesc": {
+    "message": "Voeg een item aan het rechtermuisknopmenu toe, waarmee je de link naar de huidige pagina kan verzenden",
+    "description": "Title of the block where users can check the option to mail the link of the current page"
   }
 }

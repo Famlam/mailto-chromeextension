@@ -50,5 +50,17 @@
   "alwaysask": {
     "message": "Ask me every time which email service should be used",
     "description": "The option to always ask what client to use"
+  },
+  "maillinkofpage": {
+    "message": "Mail link of a page",
+    "description": "Title of the block where users can check the option to mail the link of the current page"
+  },
+  "maillinkofthispage": {
+    "message": "Mail the link of this page",
+    "description": "Title of the context menu entry"
+  },
+  "maillinkofpagedesc": {
+    "message": "Add an item to the context menu of pages to send the address of that page in an email",
+    "description": "Title of the block where users can check the option to mail the link of the current page"
   }
 }

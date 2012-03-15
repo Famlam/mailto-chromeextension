@@ -14,9 +14,10 @@
     "128": "icon-128.png"
   },
   "name": "Mailto:",
-  "version": "1.21.1",
+  "version": "1.22.0",
   "background_page": "background.html",
   "content_security_policy": "default-src 'self' ",
   "options_page": "options.html",
-  "default_locale": "en"
+  "default_locale": "en",
+  "permissions": ["contextMenus"]
 }

@@ -1,4 +1,4 @@
-#askMeEveryTime, a[href^="#"] {
+#askMeEveryTime, #mailLinkOfPage, a[href^="#"] {
   display: none;
 }
 h1 {

@@ -22,6 +22,7 @@ h1 {
   color: blue;
   opacity: 0;
   margin-left: 75px;
+  cursor: default;
 }
 #paypal {
   float: right;

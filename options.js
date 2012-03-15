@@ -81,6 +81,8 @@ if (typeof safari !== "undefined") {
   // Safari doesn't return the window object for the window.open alternative,
   // and window.open isn't accessible in the background page.
   document.getElementById('askMeEveryTime').style.display = 'none';
+  // Safari does have a build-in option to do this
+  document.getElementById('mailLinkOfPage').style.display = 'none';
 }
 
 // ============================= END SAFARI CODE ============================= //
@@ -256,13 +258,24 @@ document.getElementById("submitCustom").addEventListener("click", addCustomURL, 
 document.getElementById("alwaysask").addEventListener("change", function(e) {
   setSetting(e);
   if (!e.target.checked) {
-    localStorage.removeItem('askAlways');
+    localStorage.removeItem(e.target.name);
   }
 }, false);
 if (localStorage.getItem('askAlways')) {
   document.getElementById("alwaysask").checked = true;
 }
 
+// ------ THE PAGE ACTION OPTION ------
+document.getElementById("sendLinkOfPage").addEventListener("change", function(e) {
+  setSetting(e);
+  if (!e.target.checked) {
+    localStorage.removeItem(e.target.name);
+  }
+  chrome.extension.getBackgroundPage().setContextMenu();
+}, false);
+if (localStorage.getItem('sendLinkPage')) {
+  document.getElementById("sendLinkOfPage").checked = true;
+}
 
 // ------ FINISHING TOUCH ------
 // Translate a page into the users language
