@@ -25,7 +25,9 @@ var a = function(e) {
   }
   mailtoLink = mailtoLink.replace(regex, '');
   chrome.extension.sendRequest(mailtoLink, function(link) {
-    if (link) {
+    if (link === -1) {
+      location.replace('mailto:' + mailtoLink);
+    } else if (link) {
       window.open(link);
     }
   });

@@ -39,6 +39,9 @@ h1 {
   font-style: italic;
   margin-right: 5px;
 }
+#sysdefault {
+  display: none;
+}
 a {
   color: blue;
 }

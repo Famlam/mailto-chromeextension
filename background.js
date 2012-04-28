@@ -57,7 +57,7 @@ var onRequestHandler = function(mailtoLink, sender, sendResponse) {
   
   if (localStorage.getItem('askAlways') || !link) {
     var wnd = window.open(chrome.extension.getURL('options.html'), "_blank",
-              'scrollbars=0,location=0,resizable=0,width=450,height=226');
+              'scrollbars=0,location=0,resizable=0,width=450,height=242');
     wnd.mailtoLink = mailtoLink;
     wnd.sR = sendResponse;
     wnd.addEventListener('load', function() {
@@ -71,9 +71,13 @@ var onRequestHandler = function(mailtoLink, sender, sendResponse) {
       var i, radiobuttons = wnd.document.getElementsByName("mail");
       var currentMail = localStorage.getItem('mail');
       var currentAsk = localStorage.getItem('askAlways');
-      var onChangeHandler = function() {
+      var onChangeHandler = function(e) {
         localStorage.removeItem('askAlways');
-        onRequestHandler(wnd.mailtoLink, sender, wnd.sR);
+        if (e.target.id !== "systemdefault") {
+          onRequestHandler(wnd.mailtoLink, sender, wnd.sR);
+        } else {
+          wnd.sR(-1);
+        }
         if (currentAsk) {
           localStorage.setItem('askAlways', 'alwaysask');
         }
@@ -150,8 +154,17 @@ var setContextMenu = function() {
   if (localStorage.getItem('sendLinkPage')) {
     chrome.contextMenus.create({title: chrome.i18n.getMessage('maillinkofthispage'),
         onclick: function(info, tab) {
-          onRequestHandler('?subject=' + encodeURIComponent(tab.title) + '&body=' + encodeURIComponent(tab.url + '\n'), {tab: tab}, function(link) {
-            chrome.tabs.create({url: link});
+          var mailtoLink = '?subject=' + encodeURIComponent(tab.title) + '&body=' + encodeURIComponent(tab.url + '\n');
+          onRequestHandler(mailtoLink, {tab: tab}, function(link) {
+            if (link === -1) {
+              chrome.tabs.create({url: 'mailto:' + mailtoLink}, function(tab) {
+                window.setTimeout(function() {
+                  chrome.tabs.remove(tab.id);
+                }, 600);
+              });
+            } else if (link) {
+              chrome.tabs.create({url: link});
+            }
           });
         }
     });

@@ -62,5 +62,9 @@
   "maillinkofpagedesc": {
     "message": "Voeg een item aan het rechtermuisknopmenu toe, waarmee je de link naar de huidige pagina kan verzenden",
     "description": "Title of the block where users can check the option to mail the link of the current page"
+  },
+  "systemdefault": {
+    "message": "Standaardactie van het systeem",
+    "description": "When you click this, it'll open the mailto link as if this extension wasn't installed"
   }
 }

@@ -62,5 +62,9 @@
   "maillinkofpagedesc": {
     "message": "Add an item to the context menu of pages to send the address of that page in an email",
     "description": "Title of the block where users can check the option to mail the link of the current page"
+  },
+  "systemdefault": {
+    "message": "System default action",
+    "description": "When you click this, it'll open the mailto link as if this extension wasn't installed"
   }
 }
