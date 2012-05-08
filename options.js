@@ -220,7 +220,7 @@ for (i=0; i<items.length; i++) {
 // ------ CUSTOM URLS ------
 // Validate the custom URL
 var validateCustomURL = function() {
-  if (/^https?\:\/\/([a-z0-9\-_\xE3-\xFF]+\.)+[a-z0-9]+\/.*\{(to|url)\}/.test(document.getElementById("inputCustom").value)) {
+  if (/^https?\:\/\/([a-z0-9\-_\xE3-\xFF]+\.)+[a-z0-9]+\/.*\{(to|url)\}/.test(document.getElementById("inputCustom").value.trim())) {
     document.getElementById("submitCustom").disabled = false;
   } else {
     document.getElementById("submitCustom").disabled = true;
@@ -230,7 +230,7 @@ document.getElementById("inputCustom").addEventListener("input", validateCustomU
 
 var addCustomURL = function() {
   setSetting({target: {name: "mail", id: "custom"}});
-  var newURL = document.getElementById("inputCustom").value;
+  var newURL = document.getElementById("inputCustom").value.trim();
   document.getElementById("inputCustom").value = "";
   var customlist = JSON.parse(localStorage.getItem("customURLs")) || [];
   if (customlist.indexOf(newURL) === -1) {
