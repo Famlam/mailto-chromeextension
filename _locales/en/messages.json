@@ -56,7 +56,7 @@
     "description": "Title of the block where users can check the option to mail the link of the current page"
   },
   "maillinkofthispage": {
-    "message": "Mail the link of this page",
+    "message": "Mail this page's URL",
     "description": "Title of the context menu entry"
   },
   "maillinkofpagedesc": {
