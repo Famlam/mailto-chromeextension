@@ -1,48 +1,10 @@
-// In case it is Safari, perform some code conversions.
-if (typeof safari !== "undefined") {
-  chrome = {
-    extension: {
-      getURL: function(path) { 
-        return safari.extension.baseURI + path;
-      },
-
-      onRequest: {
-        addListener: function(handler) {
-          safari.application.addEventListener("message", function(e) {
-            if (e.name !== "req") {
-              return;
-            }
-            handler(e.message.data, undefined, function(dataToSend) {
-              var responseMessage = { callbackToken: e.message.callbackToken, data: dataToSend };
-              e.target.page.dispatchMessage("resp", responseMessage);
-            });
-          }, false);
-        }
-      }
-    },
-    contextMenus: {
-      removeAll: function() {}
-    }
-  };
-  window.open = function(url) {
-    safari.application.activeBrowserWindow.openTab().url = url;
-  };
-  // Open the options page when requested via the settings page
-  safari.extension.settings.addEventListener("change", function(e) {
-    if (e.key === 'openOptions' && e.newValue === true) {
-      safari.extension.settings.openOptions = false;
-      window.open(chrome.extension.getURL('options.html'));
-    }
-  }, false);
-}
-
 // Handle a click on a mailto: link
 var onRequestHandler = function(mailtoLink, sender, sendResponse) {
   var mailtoAddresses = {
     aol: "http://mail.aol.com/33490-311/aim-6/en-us/mail/compose-message.aspx?to={to}&cc={cc}&bcc={bcc}&subject={subject}&body={body}",
-    fastmail: "http://ssl.fastmail.fm/action/compose/?to={to}&cc={cc}&bcc={bcc}&subject={subject}&body={body}",
+    fastmail: "https://www.fastmail.fm/action/compose/?to={to}&cc={cc}&bcc={bcc}&subject={subject}&body={body}",
     gmail: "https://mail.google.com/mail/?view=cm&tf=1&to={to}&cc={cc}&bcc={bcc}&su={subject}&body={body}",
-    hotmail: "http://mail.live.com/?rru=compose?To={to}&CC={cc}&subject={subject}&body={body}",
+    hotmail: "https://mail.live.com/default.aspx?rru=compose&to={to}&subject={subject}&body={body}&cc={cc}",
     ymail: "http://compose.mail.yahoo.com/?To={to}&Cc={cc}&Bcc={bcc}&Subj={subject}&Body={body}",
     zoho: "https://zmail.zoho.com/mail/compose.do?extsrc=mailto&mode=compose&tp=zb&ct={to}",
     custom: localStorage.getItem("custom")
