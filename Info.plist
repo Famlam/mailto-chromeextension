@@ -5,7 +5,7 @@
 	<key>Author</key>
 	<string>Famlam</string>
 	<key>Builder Version</key>
-	<string>534.52.7</string>
+	<string>534.57.2</string>
 	<key>CFBundleDisplayName</key>
 	<string>mailto:</string>
 	<key>CFBundleIdentifier</key>
@@ -13,9 +13,9 @@
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundleShortVersionString</key>
-	<string>1.23.3</string>
+	<string>1.23.4</string>
 	<key>CFBundleVersion</key>
-	<string>1.23.3</string>
+	<string>1.23.4</string>
 	<key>Chrome</key>
 	<dict>
 		<key>Global Page</key>
@@ -47,8 +47,8 @@
 		</dict>
 	</dict>
 	<key>Update Manifest URL</key>
-	<string>http://sites.google.com/site/mailtoextension/Update.plist</string>
+	<string>https://sites.google.com/site/mailtoextension/Update.plist</string>
 	<key>Website</key>
-	<string>http://code.google.com/p/mailto-chromeextension/</string>
+	<string>https://code.google.com/p/mailto-chromeextension/</string>
 </dict>
 </plist>
