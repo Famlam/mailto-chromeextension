@@ -1,3 +1,4 @@
+"use strict";
 if (typeof safari !== "undefined") {
   chrome = {
     i18n: {

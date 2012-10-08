@@ -1,3 +1,4 @@
+"use strict";
 var a = function(e) {
   var i,
       mailtoLink = "",

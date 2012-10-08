@@ -1,3 +1,4 @@
+"use strict";
 chrome = {
   extension: {
     sendRequest: function(data, callback) {

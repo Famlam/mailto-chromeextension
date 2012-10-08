@@ -1,3 +1,4 @@
+"use strict";
 // Handle a click on a mailto: link
 var onRequestHandler = function(mailtoLink, sender, sendResponse) {
   var mailtoAddresses = {
