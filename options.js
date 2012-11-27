@@ -1,6 +1,6 @@
 "use strict";
 if (typeof safari !== "undefined") {
-  chrome = {
+  var chrome = {
     i18n: {
       getMessage: function(messageID, args) {
         var i;

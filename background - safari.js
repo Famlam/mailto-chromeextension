@@ -1,6 +1,6 @@
 "use strict";
 // In case it is Safari, perform some code conversions.
-chrome = {
+var chrome = {
   extension: {
     getURL: function(path) { 
       return safari.extension.baseURI + path;

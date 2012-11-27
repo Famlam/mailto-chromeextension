@@ -101,15 +101,20 @@ var onRequestHandler = function(mailtoLink, sender, sendResponse) {
     return encodeURIComponent(result);
   };
 
+  link = link.replace(/\{to\}/g, prepareValue(queryparts.to, true)).
+           replace(/\{cc\}/g, prepareValue(queryparts.cc, true)).
+           replace(/\{bcc\}/g, prepareValue(queryparts.bcc, true)).
+           replace(/\{subject\}/g, prepareValue(queryparts.subject)).
+           replace(/\{body\}/g, prepareValue(queryparts.body)).
+           replace(/\{url\}/g, prepareValue('mailto:' + mailtoLink))
   // Let the content script call window.open so it'll stay in incognito or non-incognito
-  sendResponse(
-    link.replace(/\{to\}/g, prepareValue(queryparts.to, true)).
-      replace(/\{cc\}/g, prepareValue(queryparts.cc, true)).
-      replace(/\{bcc\}/g, prepareValue(queryparts.bcc, true)).
-      replace(/\{subject\}/g, prepareValue(queryparts.subject)).
-      replace(/\{body\}/g, prepareValue(queryparts.body)).
-      replace(/\{url\}/g, prepareValue('mailto:' + mailtoLink))
-  );
+  // Fails in Safari, since the popup blocker blocks those popups
+  if (typeof safari === "undefined") {
+    sendResponse(link);
+  } else {
+    sendResponse();
+    safari.application.activeBrowserWindow.openTab().url = link;
+  }
 };
 chrome.extension.onRequest.addListener(onRequestHandler);
 

@@ -1,5 +1,5 @@
 "use strict";
-chrome = {
+var chrome = {
   extension: {
     sendRequest: function(data, callback) {
       var callbackToken = "c" + Date.now(),
