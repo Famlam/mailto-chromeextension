@@ -1,7 +1,7 @@
 "use strict";
 var chrome = {
   extension: {
-    sendRequest: function(data, callback) {
+    sendMessage: function(data, callback) {
       var callbackToken = "c" + Date.now(),
       responseHandler = function(e) {
         // Listen for a response for our specific request token.

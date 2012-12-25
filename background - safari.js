@@ -6,7 +6,7 @@ var chrome = {
       return safari.extension.baseURI + path;
     },
 
-    onRequest: {
+    onMessage: {
       addListener: function(handler) {
         safari.application.addEventListener("message", function(e) {
           if (e.name !== "req") {
@@ -22,7 +22,18 @@ var chrome = {
   },
   
   contextMenus: {
-    removeAll: function() {}
+    removeAll: function() {},
+    onClicked: {
+      removeListener: function() {}
+    }
+  },
+  
+  runtime: {
+    onInstalled: {
+      addListener: function(fn) {
+        fn();
+      }
+    }
   }
 };
 

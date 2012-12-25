@@ -272,7 +272,9 @@ document.getElementById("sendLinkOfPage").addEventListener("change", function(e)
   if (!e.target.checked) {
     localStorage.removeItem(e.target.name);
   }
-  chrome.extension.getBackgroundPage().setContextMenu();
+  chrome.runtime.getBackgroundPage(function(BG) {
+    BG.setContextMenu();
+  });
 }, false);
 if (localStorage.getItem('sendLinkPage')) {
   document.getElementById("sendLinkOfPage").checked = true;

@@ -60,7 +60,7 @@ var onRequestHandler = function(mailtoLink, sender, sendResponse) {
         wnd.close();
       }, 60000);
     }, false);
-    return;
+    return true;
   }
 
   var queryparts = {};
@@ -113,41 +113,49 @@ var onRequestHandler = function(mailtoLink, sender, sendResponse) {
     sendResponse(link);
   } else {
     sendResponse();
-    safari.application.activeBrowserWindow.openTab().url = link;
+    window.open(link);
   }
 };
-chrome.extension.onRequest.addListener(onRequestHandler);
+chrome.extension.onMessage.addListener(onRequestHandler);
 
+
+// Install the context menus, if enabled in settings
 var setContextMenu = function() {
+  chrome.contextMenus.removeAll();
+  chrome.contextMenus.onClicked.removeListener(contextMenuHandler);
   if (localStorage.getItem('sendLinkPage')) {
-    chrome.contextMenus.create({title: chrome.i18n.getMessage('maillinkofthispage'),
-        onclick: function(info, tab) {
-          var mailtoLink = '?subject=' + encodeURIComponent(tab.title) + '&body=' + encodeURIComponent(tab.url + '\n');
-          onRequestHandler(mailtoLink, {tab: tab}, function(link) {
-            if (link === -1) {
-              chrome.tabs.create({url: 'mailto:' + mailtoLink}, function(tab) {
-                window.setTimeout(function() {
-                  chrome.tabs.remove(tab.id);
-                }, 600);
-              });
-            } else if (link) {
-              chrome.tabs.create({url: link});
-            }
-          });
-        }
-    });
-  } else {
-    chrome.contextMenus.removeAll();
+    chrome.contextMenus.create({id: "maillinkofthispage",
+                                title: chrome.i18n.getMessage('maillinkofthispage')});
+    chrome.contextMenus.onClicked.addListener(contextMenuHandler);
   }
 };
+var contextMenuHandler = function(info, tab) {
+  if (info.menuItemId === "maillinkofthispage") {
+    var mailtoLink = '?subject=' + encodeURIComponent(tab.title) + '&body=' + encodeURIComponent(tab.url + '\n');
+    onRequestHandler(mailtoLink, {tab: tab}, function(link) {
+      if (link === -1) {
+        chrome.tabs.create({url: 'mailto:' + mailtoLink}, function(tab) {
+          window.setTimeout(function() {
+            chrome.tabs.remove(tab.id);
+          }, 600);
+        });
+      } else if (link) {
+        chrome.tabs.create({url: link});
+      }
+    });
+  }
+}
+
+// On installation, show the settings popup
+chrome.runtime.onInstalled.addListener(function() {
+  if (!localStorage.getItem("mail") && !localStorage.getItem("askAlways")) {
+    window.open(chrome.extension.getURL('options.html'), "_blank",
+                'scrollbars=0,location=0,resizable=0,width=450,height=226');
+  }
+
+  if (localStorage.getItem("custom") && !localStorage.getItem("customURLs")) {
+    localStorage.setItem("customURLs", JSON.stringify([localStorage.getItem("custom")])); //TEMP since 16-1-12
+  }
+});
+
 setContextMenu();
-
-
-// On launch, check if an email provider was set
-if (!localStorage.getItem("mail") && !localStorage.getItem("askAlways")) {
-  window.open(chrome.extension.getURL('options.html'), "_blank",
-              'scrollbars=0,location=0,resizable=0,width=450,height=226');
-}
-if (localStorage.getItem("custom") && !localStorage.getItem("customURLs")) {
-  localStorage.setItem("customURLs", JSON.stringify([localStorage.getItem("custom")])); //TEMP since 16-1-12
-}
