@@ -13,24 +13,12 @@
     </form>
 
     <h1 data-i18n="options" id='h1title'></h1>
-    <fieldset>
-      <legend data-i18n="emailservice"></legend>
-      <input name="mail" type="radio" id="aol"/><label for="aol">AOL mail</label>
-      <span class="saved" id="mail" data-i18n="saved"></span><br/>
-      <input name="mail" type="radio" id="fastmail"/><label for="fastmail">Fastmail</label><br/>
-      <input name="mail" type="radio" id="gmail"/><label for="gmail">Gmail</label><br/>
-      <input name="mail" type="radio" id="hotmail"/><label for="hotmail">Hotmail / Windows Live Mail / Outlook.com</label><br/>
-      <input name="mail" type="radio" id="ymail"/><label for="ymail">Yahoo mail</label><br/>
-      <input name="mail" type="radio" id="zoho"/><label for="zoho">Zoho mail</label><br/>
-      <div id="customemailclients"></div>
-      <div id="sysdefault">
-        <input name="mail" type="radio" id="systemdefault"/><label for="systemdefault" data-i18n="systemdefault"></label><br/>
-      </div>
-    </fieldset>
+    <fieldset id="emailclientsArea"></fieldset>
 
     <fieldset id="customURL">
       <legend data-i18n="customEmailService"></legend>
-      <input type="text" id="inputCustom" spellcheck="false"/>
+      <input type="text" id="inputCustom" spellcheck="false" data-i18n="urlinput" maxlength="1024" placeholder="i18n"/>
+      <input type="text" id="inputCustomName" spellcheck="false" data-i18n="nameinput" maxlength="100" placeholder="i18n"/>
       <input type="button" id="submitCustom" value="i18n" data-i18n="add" disabled="disabled"/><br/>
       <p id="explainCustom" data-i18n="customExplanation"></p>
     </fieldset>
@@ -44,7 +32,8 @@
     <fieldset id="mailLinkOfPage">
       <legend data-i18n="maillinkofpage"></legend>
       <input type="checkbox" name="sendLinkPage" id="sendLinkOfPage"/><label for="sendLinkOfPage" data-i18n="maillinkofpagedesc"/></label>
-      <span class="saved" id="sendLinkPage" data-i18n="saved"></span>
+      <span class="saved" id="sendLinkPage" data-i18n="saved"></span><br/>
+      <span id="contextmenuwarning" data-i18n="contextmenuincompatible"></span>
     </fieldset>
 
     <script type="text/javascript" src="options.js"></script>

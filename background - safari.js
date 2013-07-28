@@ -34,6 +34,15 @@ var chrome = {
         fn();
       }
     }
+  },
+  
+  tabs: {
+    create: function(props, callback) {
+      safari.application.activeBrowserWindow.openTab().url = props.url;
+      if (callback) {
+        callback();
+      }
+    }
   }
 };
 

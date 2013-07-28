@@ -1,4 +1,4 @@
-{
+﻿{
   "options": {
     "message": "Options",
     "description": "Title of the options page"
@@ -66,5 +66,17 @@
   "systemdefault": {
     "message": "System default action",
     "description": "When you click this, it'll open the mailto link as if this extension wasn't installed"
+  },
+  "urlinput": {
+    "message": "Enter the compose URL of the email service you wish to add",
+    "description": "Placeholder of the custom URL input box on the options page"
+  },
+  "nameinput": {
+    "message": "Enter a name",
+    "description": "Placeholder of the custom name input box on the options page"
+  },
+  "contextmenuincompatible": {
+    "message": "The selected email service is incompatible with this option",
+    "description": "Warning when the selected email service doesn't contain {subject} {url} or {body}"
   }
 }

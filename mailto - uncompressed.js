@@ -17,7 +17,9 @@ var a = function(e) {
     for (i=0; i<target.length; i++) {
       var targ = target[i];
       if (targ.name && targ.value && !targ.disabled && !((targ.type==="checkbox" || targ.type==="radio") && !targ.checked)) {
-        mailtoLink += "&" + encodeURIComponent(targ.name) + "=" + encodeURIComponent(targ.value);
+        if (targ.type !== "password" && ["to", "cc", "bcc", "subject", "body"].indexOf(targ.name.toLowerCase()) !== -1) {
+          mailtoLink += "&" + encodeURIComponent(targ.name) + "=" + encodeURIComponent(targ.value);
+        }
       }
     }
   }

@@ -1,4 +1,4 @@
-{
+﻿{
   "options": {
     "message": "Instellingen",
     "description": "Title of the options page"
@@ -32,7 +32,7 @@
     "description": "Add the custom URL"
   },
   "customExplanation": {
-    "message": "Hier kun je de volledige URL naar de pagina waar je emails kunt creeren opgeven. <a>Klik hier voor uitleg</a>",
+    "message": "Hier kun je de volledige URL opgeven naar de pagina waar je emails kunt opstellen. <a>Klik hier voor uitleg</a>",
     "description": "Explanation of the syntax for custom URLs. Do not edit these texts: <a> and </a>"
   },
   "change": {
@@ -66,5 +66,17 @@
   "systemdefault": {
     "message": "Standaardactie van het systeem",
     "description": "When you click this, it'll open the mailto link as if this extension wasn't installed"
+  },
+  "urlinput": {
+    "message": "Geef de URL op naar de pagina om emails op te stellen",
+    "description": "When you click this, it'll open the mailto link as if this extension wasn't installed"
+  },
+  "nameinput": {
+    "message": "Geef een naam op",
+    "description": "When you click this, it'll open the mailto link as if this extension wasn't installed"
+  },
+  "contextmenuincompatible": {
+    "message": "De geselecteerde emaildienst is incompatibel met deze optie",
+    "description": "Warning when the selected email service doesn't contain {subject} {url} or {body}"
   }
 }
