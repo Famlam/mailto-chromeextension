@@ -15,10 +15,6 @@
     "message": "Open mailto: links met je favoriete online emaildienst",
     "description": "The description shown on chrome://extensions/ and in the webstore"
   },
-  "restartBrowser": {
-    "message": "Herstart uw browser om deze instelling toe te passen.",
-    "description": "Safari users have to restart their browser in order to change settings"
-  },
   "customURL": {
     "message": "Andere URL",
     "description": "Clicking this label allows users to use a custom URL"

@@ -1,92 +1,4 @@
 "use strict";
-if (typeof safari !== "undefined") {
-  var chrome = {
-    i18n: {
-      getMessage: function(messageID, args) {
-        var i;
-        if (typeof chrome.i18n.strings === "undefined") {
-          var languages = [navigator.language.replace('-', '_')];
-          if (navigator.language.length > 2) {
-            languages.push(navigator.language.substring(0, 2));
-          }
-          if (navigator.language !== "en") {
-            languages.push("en");
-          }
-          chrome.i18n.strings = {};
-
-          // Get the translation required and prepare it for being used.
-          var fetchAndParse = function(locale) {
-            var xhr = new XMLHttpRequest();
-            xhr.open("GET", safari.extension.baseURI + "_locales/" + locale + "/messages.json", false);
-            xhr.onreadystatechange = function() {
-              if (this.readyState === 4 && this.responseText) {
-                var parsed = JSON.parse(this.responseText);
-                var string;
-                for (string in parsed) {
-                  if (!chrome.i18n.strings[string]) {
-                    var result = parsed[string].message;
-                    // Parse placeholders
-                    var ph = parsed[string].placeholders;
-                    if (ph) {
-                      var phID;
-                      for (phID in ph) {
-                        var rgx = new RegExp("\\$" + phID + "\\$");
-                        result = result.replace(rgx, ph[phID].content);
-                      }
-                    }
-                    chrome.i18n.strings[string] = result;
-                  }
-                }
-              }
-            };
-            try {
-              xhr.send();
-            } catch (ex) {}
-          };
-          for (i=0; i < languages.length; i++) {
-            fetchAndParse(languages[i]);
-          }
-        }
-
-        if (typeof args === "string") {
-          args = [args];
-        } else if (!args) {
-          args = [];
-        }
-        var edited = chrome.i18n.strings[messageID].replace(/\$\$/g, "@@@@"); // $$ shouldn't get escaped
-        for (i=0; i<args.length; i++) {
-          var rgx = new RegExp("(?!\\$\\$)\\$" + (i+1), "g");
-          edited = edited.replace(rgx, args[i]);
-        }
-        return edited.replace(/\@\@\@\@/g, "$$");
-      }
-    }
-  };
-
-  // The background page doesn't have direct access to localStorage changes
-  // Therefore users must restart Safari first.
-  var handleSafariLocalStorageBug = function() {
-    if (handleSafariLocalStorageBug.handled) {
-      return;
-    }
-    var warning = document.createElement("p");
-    warning.innerText = chrome.i18n.getMessage("restartBrowser");
-    warning.setAttribute("style", "font-weight: bold; color: red");
-    document.body.appendChild(warning);
-    document.removeEventListener("change", handleSafariLocalStorageBug, false);
-    handleSafariLocalStorageBug.handled = true;
-  };
-  handleSafariLocalStorageBug.handled = false;
-  document.addEventListener("change", handleSafariLocalStorageBug, false);
-  
-  // Safari doesn't return the window object for the window.open alternative,
-  // and window.open isn't accessible in the background page.
-  document.getElementById('askMeEveryTime').style.display = 'none';
-  // Safari does have a build-in option to do this
-  document.getElementById('mailLinkOfPage').style.display = 'none';
-}
-
-// ============================= END SAFARI CODE ============================= //
 
 var createText = function(text, appendTo) {
   var el = document.createTextNode(text);
@@ -139,9 +51,6 @@ var removeCustomURL = function(id) {
   document.getElementById("selectedMail").style.opacity = 1;
   if (!hideInterval) {
     hideInterval = setInterval(saveLabelFadeOut, 200);
-  }
-  if (typeof safari !== "undefined") {
-    handleSafariLocalStorageBug();
   }
 };
 var addNewCustomURL = function() {
@@ -300,10 +209,6 @@ var addCustomURL = function() {
     if (!hideInterval) {
       hideInterval = setInterval(saveLabelFadeOut, 200);
     }
-  }
-
-  if (typeof safari !== "undefined") {
-    handleSafariLocalStorageBug();
   }
 };
 

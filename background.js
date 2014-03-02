@@ -5,18 +5,9 @@ var onRequestHandler = function(mailtoLink, sender, sendResponse) {
   var mailtoAddresses = JSON.parse(localStorage.getItem("mailtoURLs")) || {};
   var link = (mailtoAddresses[email] || {}).url;
 
-  if (!link && typeof safari !== "undefined") {
-    // can't show popup in Safari. Default to Gmail...
-    email = 'gmail';
-    link = (mailtoAddresses.gmail || {}).url;
-    if (!link) {
-      link = "https://mail.google.com/mail/?view=cm&tf=1&to={to}&cc={cc}&bcc={bcc}&su={subject}&body={body}";
-    }
-  }
-  
   if (localStorage.getItem('askAlways') || !link) {
     var wnd = window.open(chrome.extension.getURL('options.html'), "_blank",
-              'scrollbars=0,location=0,resizable=0,width=450,height=' + (128 + 19*Object.keys(mailtoAddresses).length));
+              'scrollbars=0,location=0,resizable=0,width=450,height=' + (139 + 19*Object.keys(mailtoAddresses).length));
     wnd.mailtoLink = mailtoLink;
     wnd.sR = sendResponse;
     wnd.addEventListener('load', function() {
@@ -104,8 +95,8 @@ var onRequestHandler = function(mailtoLink, sender, sendResponse) {
            replace(/\{body\}/g, prepareValue(queryparts.body)).
            replace(/\{url\}/g, prepareValue('mailto:' + mailtoLink));
   // Let the content script call window.open so it'll stay in incognito or non-incognito
-  // Fails in Safari and Opera, since the popup blocker blocks those popups
-  if (typeof safari === "undefined" && typeof opr === "undefined") {
+  // Fails in Opera, since the popup blocker blocks those popups
+  if (typeof opr === "undefined") {
     sendResponse(link);
   } else {
     sendResponse();
@@ -161,7 +152,6 @@ chrome.runtime.onInstalled.addListener(function() {
       fastmail: {name: "FastMail", url: "https://www.fastmail.fm/action/compose/?to={to}&cc={cc}&bcc={bcc}&subject={subject}&body={body}"},
       gmail: {name: "Gmail", url: "https://mail.google.com/mail/?view=cm&tf=1&to={to}&cc={cc}&bcc={bcc}&su={subject}&body={body}"},
       hotmail: {name: "Hotmail / Windows Live Mail / Outlook.com", url: "https://mail.live.com/default.aspx?rru=compose&to={to}&subject={subject}&body={body}&cc={cc}"},
-      myopera: {name: "My Opera mail", url: "https://mail.opera.com/action/compose/?to={to}&cc={cc}&bcc={bcc}&subject={subject}&body={body}"},
       ymail: {name: "Yahoo mail", url: "http://compose.mail.yahoo.com/?To={to}&Cc={cc}&Bcc={bcc}&Subj={subject}&Body={body}"},
       zoho: {name: "Zoho mail", url: "https://zmail.zoho.com/mail/compose.do?extsrc=mailto&mode=compose&tp=zb&ct={to}"}
     };
