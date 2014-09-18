@@ -1,78 +1,94 @@
 ﻿{
-  "options": {
-    "message": "Instellingen",
-    "description": "Title of the options page"
+  "settingsTitle": {
+    "message": "Mailto: instellingen",
+    "description": "[settings] Title of the settings page"
   },
-  "emailservice": {
-    "message": "Selecteer de emaildienst die je wilt gebruiken",
-    "description": "The title of the block where the user can choose which email service (s)he uses"
+  "popupTitle": {
+    "message": "Selecteer de emaildienst die u wilt gebruiken",
+    "description": "[popup] Title of the page that pops up when 'ask me every time' is set"
   },
-  "saved": {
-    "message": "Opgeslagen!",
-    "description": "Confirmation when someone changes an option"
+  "emailService": {
+    "message": "Emaildienst",
+    "description": "[settings] Title of the section that lists the current email service"
   },
   "description": {
     "message": "Open mailto: links met je favoriete online emaildienst",
-    "description": "The description shown on chrome://extensions/ and in the webstore"
+    "description": "[other] Description shown on chrome://extensions/"
   },
-  "customURL": {
-    "message": "Andere URL",
-    "description": "Clicking this label allows users to use a custom URL"
+  "composeMail": {
+    "message": "Stel een lege mail op",
+    "description": "[settings] Text when you hover over the currently selected email service"
   },
-  "customEmailService": {
-    "message": "Andere email service",
-    "description": "Title of the block where users can enter custom URLs"
+  "chooseService": {
+    "message": "Kies een emaildienst",
+    "description": "[settings] Title of the section that lets you choose a different email service"
+  },
+  "or": {
+    "message": "of",
+    "description": "[settings] Label in between 'real' email services and additional options"
+  },
+  "addNewLink": {
+    "message": "voeg een andere dienst toe",
+    "description": "[settings] Link to add a new service to the list of known email services"
   },
   "add": {
-    "message": "Toevoegen",
-    "description": "Add the custom URL"
+    "message": "voeg toe",
+    "description": "[settings] Label shown on buttons when adding new email services or filtering patterns"
   },
-  "customExplanation": {
-    "message": "Hier kun je de volledige URL opgeven naar de pagina waar je emails kunt opstellen. <a>Klik hier voor uitleg</a>",
-    "description": "Explanation of the syntax for custom URLs. Do not edit these texts: <a> and </a>"
+  "getHelp": {
+    "message": "ondersteuning",
+    "description": "[settings] Label shown when adding or modifying an email service"
+  },
+  "getHelpTitle": {
+    "message": "Toon help en voorbeelden van nieuwe emaildiensten",
+    "description": "[settings] Label shown when hovering the 'getHelp' text"
   },
   "change": {
     "message": "wijzig",
-    "description": "Change the custom URL"
+    "description": "[settings] Label shown on buttons or when hovering existing email services"
   },
   "remove": {
     "message": "verwijder",
-    "description": "Remove the custom URL"
+    "description": "[settings] Label shown on buttons or when hovering existing email services"
   },
-  "multipleaccounts": {
-    "message": "Meerdere accounts",
-    "description": "Title of the block where users can check the option to always ask what client to use"
+  "askEveryTime": {
+    "message": "Vraag me elke keer",
+    "description": "[settings] Option when changing the default email service"
   },
-  "alwaysask": {
-    "message": "Vraag me elke keer welke emaildienst ik wilt gebruiken",
-    "description": "The option to always ask what client to use"
-  },
-  "maillinkofpage": {
-    "message": "Pagina-adres verzenden",
-    "description": "Title of the block where users can check the option to mail the link of the current page"
-  },
-  "maillinkofthispage": {
+  "mailThisPageURL": {
     "message": "Mail het adres van deze pagina",
-    "description": "Title of the context menu entry"
+    "description": "[context menu] Entry in the context menu, if enabled in the settings"
   },
-  "maillinkofpagedesc": {
-    "message": "Voeg een item aan het rechtermuisknopmenu toe, waarmee je de link naar de huidige pagina kan verzenden",
-    "description": "Title of the block where users can check the option to mail the link of the current page"
+  "contextMenuCheckbox": {
+    "message": "Voeg een item toe aan het contextmenu van pagina's, om daarmee de website URL te versturen",
+    "description": "[settings] Option to enable the context menu entry"
   },
-  "systemdefault": {
+  "systemDefault": {
     "message": "Standaardactie van het systeem",
-    "description": "When you click this, it'll open the mailto link as if this extension wasn't installed"
+    "description": "[popup] Option in the 'Ask me every time' popup to use the behavior which would be triggered without this extension"
   },
-  "urlinput": {
-    "message": "Geef de URL op naar de pagina om emails op te stellen",
-    "description": "When you click this, it'll open the mailto link as if this extension wasn't installed"
+  "newServiceURLdescription": {
+    "message": "Voer de volledige URL naar de opstelpagina van de emaildienst in",
+    "description": "[settings] Placeholder when adding or modifying an email service"
   },
-  "nameinput": {
-    "message": "Geef een naam op",
-    "description": "When you click this, it'll open the mailto link as if this extension wasn't installed"
+  "newServiceNameDescription": {
+    "message": "Geef de dienst een naam (optioneel)",
+    "description": "[settings] Placeholder when adding or modifying an email service"
   },
-  "contextmenuincompatible": {
+  "contextmenu": {
+    "message": "Contextmenu",
+    "description": "[settings] Title of the context menu section"
+  },
+  "contextmenuIncompatible": {
     "message": "De geselecteerde emaildienst is incompatibel met deze optie",
-    "description": "Warning when the selected email service doesn't contain {subject} {url} or {body}"
+    "description": "[settings] Shown when an email service cannot use the context menu option"
+  },
+  "disableOnWebsites": {
+    "message": "Schakel uit op websites",
+    "description": "[settings] Title of the section where you can filter the website URLs"
+  },
+  "pattern": {
+    "message": "Filterpatroon",
+    "description": "[settings] Placeholder of the input area for new URL exclusion filters"
   }
 }

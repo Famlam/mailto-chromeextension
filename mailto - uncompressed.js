@@ -27,14 +27,17 @@ var a = function(e) {
     return;
   }
   mailtoLink = mailtoLink.replace(regex, '');
-  chrome.extension.sendMessage(mailtoLink, function(link) {
-    if (link === -1) {
-      location.replace('mailto:' + mailtoLink);
-    } else if (link) {
-      window.open(link);
-    }
-  });
+  chrome.runtime.sendMessage({action: "openMailto", data: mailtoLink});
   e.preventDefault();
 };
-document.addEventListener("submit", a, false);
-document.addEventListener("click", a, false);
+
+chrome.storage.local.get({"disableURLRegexes": []}, function(obj) {
+  var i, regexes = obj.disableURLRegexes;
+  for (i=0; i<regexes.length; i++) {
+    if (new RegExp(regexes[i], "i").test(location.href)) {
+      return;
+    }
+  }
+  document.addEventListener("submit", a, false);
+  document.addEventListener("click", a, false);
+});

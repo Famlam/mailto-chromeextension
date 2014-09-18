@@ -1,78 +1,94 @@
 ﻿{
-  "options": {
-    "message": "Options",
-    "description": "Title of the options page"
+  "settingsTitle": {
+    "message": "Mailto: settings",
+    "description": "[settings] Title of the settings page"
   },
-  "emailservice": {
+  "popupTitle": {
     "message": "Select the email service you use",
-    "description": "The title of the block where the user can choose which email service (s)he uses"
+    "description": "[popup] Title of the page that pops up when 'ask me every time' is set"
   },
-  "saved": {
-    "message": "Saved!",
-    "description": "Confirmation when someone changes an option"
+  "emailService": {
+    "message": "Email service",
+    "description": "[settings] Title of the section that lists the current email service"
   },
   "description": {
     "message": "Open mailto: links with your favorite online email service",
-    "description": "The description shown on chrome://extensions/ and in the webstore"
+    "description": "[other] Description shown on chrome://extensions/"
   },
-  "customURL": {
-    "message": "Custom URL",
-    "description": "Clicking this label allows users to use a custom URL"
+  "composeMail": {
+    "message": "Compose an empty email",
+    "description": "[settings] Text when you hover over the currently selected email service"
   },
-  "customEmailService": {
-    "message": "Custom email service",
-    "description": "Title of the block where users can enter custom URLs"
+  "chooseService": {
+    "message": "Choose an email service",
+    "description": "[settings] Title of the section that lets you choose a different email service"
+  },
+  "or": {
+    "message": "or",
+    "description": "[settings] Label in between 'real' email services and additional options"
+  },
+  "addNewLink": {
+    "message": "add another service",
+    "description": "[settings] Link to add a new service to the list of known email services"
   },
   "add": {
-    "message": "Add",
-    "description": "Add the custom URL"
+    "message": "add",
+    "description": "[settings] Label shown on buttons when adding new email services or filtering patterns"
   },
-  "customExplanation": {
-    "message": "Here you have to enter the full URL to the compose page of your email service. <a>Click here for help</a>",
-    "description": "Explanation of the syntax for custom URLs. Do not translate these texts: {to} {cc} {bcc} {subject} {body}"
+  "getHelp": {
+    "message": "get help",
+    "description": "[settings] Label shown when adding or modifying an email service"
+  },
+  "getHelpTitle": {
+    "message": "Show help and examples on adding new services",
+    "description": "[settings] Label shown when hovering the 'getHelp' text"
   },
   "change": {
     "message": "change",
-    "description": "Change the custom URL"
+    "description": "[settings] Label shown on buttons or when hovering existing email services"
   },
   "remove": {
     "message": "remove",
-    "description": "Remove the custom URL"
+    "description": "[settings] Label shown on buttons or when hovering existing email services"
   },
-  "multipleaccounts": {
-    "message": "Multiple accounts",
-    "description": "Title of the block where users can check the option to always ask what client to use"
+  "askEveryTime": {
+    "message": "Ask me every time",
+    "description": "[settings] Option when changing the default email service"
   },
-  "alwaysask": {
-    "message": "Ask me every time which email service should be used",
-    "description": "The option to always ask what client to use"
-  },
-  "maillinkofpage": {
-    "message": "Mail link of a page",
-    "description": "Title of the block where users can check the option to mail the link of the current page"
-  },
-  "maillinkofthispage": {
+  "mailThisPageURL": {
     "message": "Mail this page's URL",
-    "description": "Title of the context menu entry"
+    "description": "[context menu] Entry in the context menu, if enabled in the settings"
   },
-  "maillinkofpagedesc": {
-    "message": "Add an item to the context menu of pages to send the address of that page in an email",
-    "description": "Title of the block where users can check the option to mail the link of the current page"
+  "contextMenuCheckbox": {
+    "message": "Add an item to the context menu of pages to send the address of that page",
+    "description": "[settings] Option to enable the context menu entry"
   },
-  "systemdefault": {
+  "systemDefault": {
     "message": "System default action",
-    "description": "When you click this, it'll open the mailto link as if this extension wasn't installed"
+    "description": "[popup] Option in the 'Ask me every time' popup to use the behavior which would be triggered without this extension"
   },
-  "urlinput": {
-    "message": "Enter the compose URL of the email service you wish to add",
-    "description": "Placeholder of the custom URL input box on the options page"
+  "newServiceURLdescription": {
+    "message": "Fill in the full URL to the compose page of your email service",
+    "description": "[settings] Placeholder when adding or modifying an email service"
   },
-  "nameinput": {
-    "message": "Enter a name",
-    "description": "Placeholder of the custom name input box on the options page"
+  "newServiceNameDescription": {
+    "message": "Name the service (optional)",
+    "description": "[settings] Placeholder when adding or modifying an email service"
   },
-  "contextmenuincompatible": {
+  "contextmenu": {
+    "message": "Context menu",
+    "description": "[settings] Title of the context menu section"
+  },
+  "contextmenuIncompatible": {
     "message": "The selected email service is incompatible with this option",
-    "description": "Warning when the selected email service doesn't contain {subject} {url} or {body}"
+    "description": "[settings] Shown when an email service cannot use the context menu option"
+  },
+  "disableOnWebsites": {
+    "message": "Disable on websites",
+    "description": "[settings] Title of the section where you can filter the website URLs"
+  },
+  "pattern": {
+    "message": "Pattern to filter upon",
+    "description": "[settings] Placeholder of the input area for new URL exclusion filters"
   }
 }

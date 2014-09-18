@@ -1,283 +1,393 @@
 "use strict";
 
-var createText = function(text, appendTo) {
-  var el = document.createTextNode(text);
-  if (appendTo) {
-    appendTo.appendChild(el);
-  }
-  return el;
-};
-var createTag = function(tagname, attributes, properties, appendTo) {
-  var i, el = document.createElement(tagname);
-  if (attributes) {
-    for (i in attributes) {
-      el.setAttribute(i, attributes[i]);
+var preventSetService = false;
+
+$("#buttonOpenServicesList").click(function() {
+  $("#servicesList").slideDown(300);
+  $("#currentService").slideUp(300);
+});
+
+chrome.storage.local.get("contextmenu", function(obj) {
+  $("#contextmenu_enable")
+    .prop("checked", obj.contextmenu === true)
+    .change(function(e) {
+      chrome.storage.local.set({"contextmenu": e.target.checked});
+    });
+});
+
+chrome.storage.local.get("currentService", function(obj) {
+  if (obj.currentService && obj.currentService.id) {
+    $("a", "#currentService")
+      .text(obj.currentService.name || obj.currentService.url);
+    $("#servicesList")
+      .attr("data-current", obj.currentService.id);
+    if (!contextMenuSupported(obj.currentService.url)) {
+      $("#contextmenu_unsupported").css("display", "block");
+      $("#contextmenu_enable").prop("disabled", true);
     }
+  } else {
+    $("#servicesList").css("display", "block");
+    $("#currentService").css("display", "none");
   }
-  if (properties) {
-    for (i in properties) {
-      if (i === "textContent") {
-        createText(properties[i], el);
+  initializeServicesList();
+});
+
+var contextMenuSupported = function(url) {
+  return !url || /\{(url|body|subject)\}/.test(url);
+};
+
+var closeOpenForms = function() {
+  $("#servicesList form")
+    .filter(":visible")
+    .each(function(i, form) {
+      $(form).css("display", "none");
+      $(form).prev().css("display", "inline");
+      $(form).prev().prev().prop("disabled", false);
+      chrome.storage.local.get("mailtoURLs", function(obj) {
+        if (form.name !== "service_new") {
+          $("input[id^='service_new_name_']", form).val(obj.mailtoURLs[form.dataset.id].name || "");
+          $("input[id^='service_new_url_']", form).val(obj.mailtoURLs[form.dataset.id].url);
+        } else {
+          $("input[placeholder]", form).val("");
+        }
+      });
+    });
+};
+var fnOpenForm = function(e) {
+  closeOpenForms();
+  var target = $("#service_" + e.target.dataset.id);
+  $(target).prop("disabled", true);
+  $(target).nextUntil("form").each(function(i, el) {
+    $(el).css("display", "none");
+  });
+  $(target).nextAll("form").first().css("display", "inline-block");
+};
+
+var initializeServicesList = function() {
+  var URLvalidationPattern = "^\\s*https?\\:\\/\\/([a-z0-9\\-_\\xE3-\\xFF]+\\.)+[a-z0-9]+\\/.*\\{(to|url)\\}.*";
+
+  var preventRemoveAllServices = function() {
+    if ($(".removeLabel").length === 1) {
+      $(".pipe, .removeLabel").css("display", "none");
+    } else {
+      $(".pipe, .removeLabel").css("display", "inline");
+    }
+  };
+  
+  var fnSetDefaultService = function(e) {
+    if (preventSetService) {
+      return;
+    }
+    var id, url, name;
+    if (e.target.checked) {
+      id = e.target.id.substring(8);
+      if (id === "askEveryTime") {
+        name = $("label[for='service_askEveryTime']").text();
+        url = "";
       } else {
-        el[i] = properties[i];
+        name = $("label[for='service_" + id + "']").text();
+        url = $("#service_new_url_" + id).val().trim();
+        if (new RegExp(URLvalidationPattern).test(url) === false) {
+          return;
+        }
       }
-    }
-  }
-  if (appendTo) {
-    appendTo.appendChild(el);
-  }
-  return el;
-};
-
-// Trigger when an input element changes
-var i, items = document.getElementsByTagName("input");
-for (i=0; i<items.length; i++) {
-  if (items[i].type === "radio") {
-    items[i].addEventListener("change", setSetting, false);
-  }
-}
-
-// ------ SHOWING AND EDITING THE LIST OF CUSTOM URLS ------
-var removeCustomURL = function(id) {
-  id = (typeof id === "string") ? id : this.dataset.id;
-  var URLs = JSON.parse(localStorage.getItem("mailtoURLs"));
-  delete URLs[id];
-  localStorage.setItem("mailtoURLs", JSON.stringify(URLs));
-  
-  if (localStorage.getItem("selectedMail") === id) {
-    localStorage.removeItem("selectedMail");
-  }
-  initializeCustom();
-  document.getElementById("selectedMail").style.opacity = 1;
-  if (!hideInterval) {
-    hideInterval = setInterval(saveLabelFadeOut, 200);
-  }
-};
-var addNewCustomURL = function() {
-  document.getElementById("customURL").style.display = "block";
-  document.getElementById("addCustom").style.display = "none";
-  validateCustomURL();
-  document.getElementById("inputCustom").focus();
-};
-var changeCustomURL = function() {
-  var id = this.dataset.id;
-  var URLs = JSON.parse(localStorage.getItem("mailtoURLs"));
-  document.getElementById("inputCustom").value = URLs[id].url;
-  document.getElementById("inputCustomName").value = URLs[id].name || "";  
-  var i, els, emailArea = document.getElementById("emailclientsArea");
-  if (emailArea.dataset.remove_id) {
-    els = document.querySelectorAll("#" + emailArea.dataset.remove_id + ",[for='" + emailArea.dataset.remove_id + "'],[data-id='" + emailArea.dataset.remove_id + "'],[data-id='" + emailArea.dataset.remove_id + "']+br");
-    for (i=0; i<els.length; i++) {
-      els[i].style.setProperty("display", els[i].nodeName === "INPUT" ? "inline-block" : "inline", "");
-    }
-  }
-  emailArea.setAttribute("data-remove_id", id);
-  els = document.querySelectorAll("#" + id + ",[for='" + id + "'],[data-id='" + id + "'],[data-id='" + id + "']+br");
-  for (i=0; i<els.length; i++) {
-    els[i].style.setProperty("display", "none", "");
-  }
-  addNewCustomURL();
-};
-var initializeCustom = function() {
-  var URLs = JSON.parse(localStorage.getItem("mailtoURLs")) || {},
-      emailArea = document.getElementById('emailclientsArea');
-  while (emailArea.firstChild) {
-    emailArea.removeChild(emailArea.firstChild);
-  }
-  createTag("legend", {}, {"textContent": chrome.i18n.getMessage('emailservice')}, emailArea);
-  
-  var i, id, ids = Object.keys(URLs), input;
-  ids.sort(function(a,b) {
-    if (URLs[a].name && !URLs[b].name) {return -1;}
-    if (!URLs[a].name && URLs[b].name) {return 1;}
-    if (URLs[a].name) {
-      if (URLs[a].name.toLowerCase() > URLs[b].name.toLowerCase()) {return 1;}
-      if (URLs[a].name.toLowerCase() < URLs[b].name.toLowerCase()) {return -1;}
-    }
-    if (URLs[a].url > URLs[b].url) {return 1;}
-    return -1;
-  });
-
-  for (i=0; i<ids.length; i++) {
-    id = ids[i];
-    input = createTag("input", {"type": "radio", "name": "selectedMail", "id": id}, {}, emailArea);
-    if (id === localStorage.getItem("selectedMail")) {
-      input.checked = true;
-    }
-    input.addEventListener("change", setSetting, false);
-    input.addEventListener("change", checkDoesSupportContextmenu, false);
-
-    if (URLs[id].name) {
-      createTag("label", {"for": id}, {"textContent": URLs[id].name, "title": URLs[id].url}, emailArea);
-    } else {
-      createTag("label", {"for": id, "class": "hasNoName"}, {"textContent": URLs[id].url}, emailArea);
-    }
-
-    input = createTag("a", {"href": "#customURL", "data-id": id}, {"textContent": chrome.i18n.getMessage('change')}, emailArea);
-    input.addEventListener('click', changeCustomURL, false);
-
-    if (ids.length > 1) {
-      input = createTag("a", {"href": "#", "data-id": id}, {"textContent": chrome.i18n.getMessage('remove')}, emailArea);
-      input.addEventListener('click', removeCustomURL, false);
-    }
-
-    if (i===0) {
-      createTag("span", {"class": "saved", "id": "selectedMail"}, {"textContent": chrome.i18n.getMessage("saved")}, emailArea);
-    }
-
-    createTag("br", {}, {}, emailArea);
-  }
-  
-  var div = createTag("div", {"id": "sysdefault"}, {}, emailArea);
-  createTag("input", {"type": "radio", "name": "selectedMail", "id": "systemdefault"}, {}, div);
-  createTag("label", {"for": "systemdefault"}, {"textContent": chrome.i18n.getMessage("systemdefault")}, div);
-  createTag("br", {}, {}, div);
-  
-  if (i < 25) {
-    input = createTag("a", {"href": "#customURL", "id": "addCustom"}, {"textContent": chrome.i18n.getMessage('customURL')}, emailArea);
-    input.addEventListener('click', addNewCustomURL, false);
-  }
-
-  document.getElementById("customURL").style.display = "none";
-  checkDoesSupportContextmenu();
-};
-
-// ------ SAVING WHAT EMAIL CLIENT TO USE ------
-var hideInterval = null, saveLabelFadeOut = function() {
-  // Fade out. If there are no more labels to fade out -> delete interval
-  var i, items = document.getElementsByClassName("saved"), fadingLabelsCount = 0;
-  for (i=0; i<items.length; i++) {
-    if (!items[i].style || !items[i].style.opacity || items[i].style.opacity < 0.05) {
-      items[i].style.opacity = 0;
-      if (!fadingLabelsCount && i === items.length - 1) {
-        clearInterval(hideInterval);
-        hideInterval = null;
+      if (!contextMenuSupported(url)) {
+        $("#contextmenu_unsupported").fadeIn(300);
+        $("#contextmenu_enable")
+          .prop("disabled", true)
+          .prop("checked", false)
+          .change();
+      } else {
+        $("#contextmenu_unsupported").fadeOut(300);
+        $("#contextmenu_enable").prop("disabled", false);
       }
-    } else {
-      items[i].style.opacity = items[i].style.opacity - 0.03;
-      fadingLabelsCount++;
+      chrome.storage.local.set({"currentService": {id: id, name: name, url: url}});
+      $("a", "#currentService")
+        .text(name || url);
+      $("#servicesList")
+        .attr("data-current", id);
+      $("#currentService").slideDown(300);
+      $("#servicesList").slideUp(300);
     }
-  }
-};
-var setSetting = function(e) {
-  // Save and show the correct 'saved' message
-  localStorage.setItem(e.target.name, e.target.id);
-  document.getElementById(e.target.name).style.opacity = 1;
-  if (!hideInterval) {
-    hideInterval = setInterval(saveLabelFadeOut, 200);
-  }
-};
-
-// ------ CUSTOM URLS ------
-// Validate the custom URL
-var validateCustomURL = function() {
-  if (/^https?\:\/\/([a-z0-9\-_\xE3-\xFF]+\.)+[a-z0-9]+\/.*\{(to|url)\}/.test(document.getElementById("inputCustom").value.trim())) {
-    document.getElementById("submitCustom").disabled = false;
-  } else {
-    document.getElementById("submitCustom").disabled = true;
-  }
-};
-document.getElementById("inputCustom").addEventListener("input", validateCustomURL, false);
-
-var addCustomURL = function() {
-  var i, id, URLs = JSON.parse(localStorage.getItem("mailtoURLs"));
-  for (i=0; i<=Object.keys(URLs).length; i++) {
-    if (!URLs.hasOwnProperty("custom" + i)) {
-      id = "custom" + i;
-      break;
-    }
-  }
-  setSetting({target: {name: "selectedMail", id: id}});
-  var newItem = {};
-  newItem.url = document.getElementById("inputCustom").value.trim();
-  if (document.getElementById("inputCustomName").value.trim()) {
-    newItem.name = document.getElementById("inputCustomName").value.trim();
-  }
-  URLs[id] = newItem;
-  localStorage.setItem("mailtoURLs", JSON.stringify(URLs));
-  
-  document.getElementById("inputCustom").value = "";
-  document.getElementById("inputCustomName").value = "";
-  
-  var fieldset = document.getElementById("emailclientsArea");
-  if (fieldset.dataset.remove_id) {
-    removeCustomURL(fieldset.dataset.remove_id);
-    fieldset.removeAttribute("data-remove_id");
-  } else {
-    initializeCustom();
-    document.getElementById("selectedMail").style.opacity = 1;
-    if (!hideInterval) {
-      hideInterval = setInterval(saveLabelFadeOut, 200);
-    }
-  }
-};
-
-var pressedEnterKey = function(e) {
-  if (e.keyCode === 13 && !document.getElementById("submitCustom").disabled) {
-    addCustomURL();
+  };
+  var createServiceEntry = function(obj, key) {
+    var container = $("<div>");
+    $("<input>")
+      .attr("type", "radio")
+      .attr("name", "emailservice")
+      .attr("id", "service_" + key)
+      .prop("checked", key === $("#servicesList").attr("data-current"))
+      .change(fnSetDefaultService)
+      .appendTo(container);
+    var hoverspan = $("<span>")
+      .appendTo(container);
+    $("<label>")
+      .attr("for", "service_" + key)
+      .text(obj.mailtoURLs[key].name || obj.mailtoURLs[key].url)
+      .attr("title", obj.mailtoURLs[key].url)
+      .css("font-style", obj.mailtoURLs[key].name ? "normal" : "italic")
+      .appendTo(hoverspan);
+    var span = $("<span>")
+      .addClass("service_modify")
+      .appendTo(hoverspan);
+    $(document.createTextNode("("))
+      .appendTo(span);
+    $("<a>")
+      .text(chrome.i18n.getMessage("change"))
+      .attr("data-id", key)
+      .click(fnOpenForm)
+      .appendTo(span);
+    $("<span>")
+      .addClass("pipe")
+      .text(" | ")
+      .appendTo(span);
+    $("<a>")
+      .addClass("removeLabel")
+      .text(chrome.i18n.getMessage("remove"))
+      .click(removeService)
+      .attr("data-id", key)
+      .appendTo(span);
+    $(document.createTextNode(")"))
+      .appendTo(span);
+    var form = $("<form>")
+      .attr("name", "service_new_" + key)
+      .submit(changeService)
+      .attr("data-id", key)
+      .appendTo(container);
+    $("<input>")
+      .attr("name", "service_new_" + key)
+      .attr("id", "service_new_name_" + key)
+      .attr("type", "text")
+      .attr("maxlength", "256")
+      .attr("placeholder", chrome.i18n.getMessage("newServiceNameDescription"))
+      .val(obj.mailtoURLs[key].name || "")
+      .appendTo(form);
+    $("<input>")
+      .attr("name", "service_new_" + key)
+      .attr("id", "service_new_url_" + key)
+      .attr("type", "url")
+      .attr("spellcheck", "false")
+      .attr("maxlength", "1024")
+      .attr("placeholder", chrome.i18n.getMessage("newServiceURLdescription"))
+      .attr("required", "required")
+      .attr("pattern", URLvalidationPattern)
+      .val(obj.mailtoURLs[key].url)
+      .appendTo(form);
+    $("<input>")
+      .attr("name", "service_new_" + key)
+      .attr("type", "submit")
+      .val(chrome.i18n.getMessage("add"))
+      .appendTo(form);
+    span = $("<span>")
+      .appendTo(form);
+    $(document.createTextNode("("))
+      .appendTo(span);
+    $("<a>")
+      .attr("href", "https://code.google.com/p/mailto-chromeextension/wiki/AddCustomUrl")
+      .attr("target", "_blank")
+      .attr("title", chrome.i18n.getMessage("getHelpTitle"))
+      .text(chrome.i18n.getMessage("getHelp"))
+      .appendTo(span);
+    $(document.createTextNode(")"))
+      .appendTo(span);
+    $("<br>")
+      .appendTo(container);
+      
+    return $(container).children().detach();
+  };
+  var addNewService = function(e) {
+    chrome.storage.local.get("mailtoURLs", function(obj) {
+      var i;
+      for (i=0; i<Object.keys(obj.mailtoURLs).length; i++) {
+        if (!obj.mailtoURLs.hasOwnProperty("custom" + i)) {
+          obj.mailtoURLs["custom" + i] = {
+            name: $("#service_new_name").val(),
+            url: $("#service_new_url").val()
+          };
+          break;
+        }
+      }
+      chrome.storage.local.set({"mailtoURLs": obj.mailtoURLs});
+      $(createServiceEntry(obj, "custom" + i))
+        .insertBefore($("#addNewServicesBeforeMe"))
+        .filter(":visible")
+        .css("display", "none")
+        .fadeIn(300, function() {
+          $("#service_custom" + i).prop("checked", true).change();
+          $("#service_linkAddNew").css("display", "inline");
+          $("#service_new").prop("disabled", false);
+          $("form[name='service_new']").css("display", "none");
+          preventRemoveAllServices();
+        });
+    });
     e.preventDefault();
-  }
-};
-document.getElementById("inputCustom").addEventListener("keypress", pressedEnterKey, false);
-document.getElementById("inputCustomName").addEventListener("keypress", pressedEnterKey, false);
-document.getElementById("submitCustom").addEventListener("click", addCustomURL, false);
+  };
+  var removeService = function(e) {
+    closeOpenForms();
+    chrome.storage.local.get("mailtoURLs", function(obj) {
+      var id = e.target.dataset.id;
+      delete obj.mailtoURLs[id];
+      $(e.target).parent().remove();
+      chrome.storage.local.set({"mailtoURLs": obj.mailtoURLs});
+      if ($("#service_" + id).prop("checked")) {
+        chrome.storage.local.remove("currentService");
+        $("#contextmenu_unsupported").fadeOut(300);
+        $("#contextmenu_enable").prop("disabled", false);
+      }
+      $("#service_" + id).attr("disabled", "disabled");
+      $("#service_" + id).prev().nextUntil("input[type='radio']:not([disabled]),#addNewServicesBeforeMe").fadeOut(300, function() {
+        $(this).remove();
+        preventRemoveAllServices();
+      });
+    });
+  };
+  var changeService = function(e) {
+    chrome.storage.local.get("mailtoURLs", function(obj) {
+      var id = e.target.dataset.id;
+      obj.mailtoURLs[id] = {
+        name: $("#service_new_name_" + id).val(),
+        url: $("#service_new_url_" + id).val()
+      };
+      chrome.storage.local.set({"mailtoURLs": obj.mailtoURLs});
+      $(createServiceEntry(obj, id))
+        .insertBefore($("#service_" + id).nextAll("input[type='radio']").first())
+        .filter(":visible")
+        .css("display", "none")
+        .fadeIn(300, function() {
+          $("#service_" + id).prop("checked", true).change();
+        });
+      $("#service_" + id).prev().nextUntil("input[type='radio']:not([disabled]),#addNewServicesBeforeMe").remove();
+    });
+    e.preventDefault();
+  };
+  chrome.storage.local.get("mailtoURLs", function(obj) {
+    var key;
 
-
-// ------ THE ASK ME EVERY TIME OPTION ------
-document.getElementById("alwaysask").addEventListener("change", function(e) {
-  setSetting(e);
-  if (!e.target.checked) {
-    localStorage.removeItem(e.target.name);
-  }
-  checkDoesSupportContextmenu();
-}, false);
-if (localStorage.getItem('askAlways')) {
-  document.getElementById("alwaysask").checked = true;
-}
-
-
-// ------ THE PAGE ACTION OPTION ------
-document.getElementById("sendLinkOfPage").addEventListener("change", function(e) {
-  setSetting(e);
-  if (!e.target.checked) {
-    localStorage.removeItem(e.target.name);
-  }
-  chrome.runtime.getBackgroundPage(function(BG) {
-    BG.setContextMenu();
+    for (key in obj.mailtoURLs) {
+      $(createServiceEntry(obj, key)).insertBefore($("#addNewServicesBeforeMe"));
+    }
+    
+    preventRemoveAllServices();
+    
+    $("#service_askEveryTime")
+      .prop("checked", $("#servicesList").attr("data-current") === "askEveryTime")
+      .change(fnSetDefaultService);
+    $("#service_new")
+      .click(fnOpenForm);
+    $("#service_linkAddNew")
+      .click(fnOpenForm);
+    $("form[name='service_new']")
+      .submit(addNewService);
+    $("#service_new_url")
+      .attr("pattern", URLvalidationPattern);
   });
-}, false);
-if (localStorage.getItem('sendLinkPage')) {
-  document.getElementById("sendLinkOfPage").checked = true;
-}
-var checkDoesSupportContextmenu = function() {
-  var URLs = JSON.parse(localStorage.getItem("mailtoURLs"));
-  var currentSelected = document.querySelector("[name='selectedMail']:checked");
-  var supportsContextmenu = true;
-  if (currentSelected && URLs[currentSelected.id] && !/\{(url|body|subject)\}/.test(URLs[currentSelected.id].url) && !document.getElementById("alwaysask").checked) {
-    supportsContextmenu = false;
-  }
-  document.getElementById("contextmenuwarning").style.display = (supportsContextmenu ? "none" : "inline");
 };
 
-// ------ FINISHING TOUCH ------
-// Translate a page into the users language
-items = document.querySelectorAll("[data-i18n]");
-for (i=0; i<items.length; i++) {
-  var translation = chrome.i18n.getMessage(items[i].getAttribute("data-i18n"));
-  if (items[i].value === "i18n") {
-    items[i].value = translation;
-  } else if (items[i].placeholder === "i18n") {
-    items[i].placeholder = translation;
-  } else {
-    items[i].innerText = translation;
+chrome.storage.local.get("disableURLPatterns", function(obj) {
+  // Stuff related to the exclude pattern list
+  var fillListOfDisablePatterns = function(list) {
+    $("#disableURLPatterns").empty();
+    var i;
+    for (i=0; i<list.length; i++) {
+      if (list[i] !== $("#disableURLPatterns_newInput").attr("data-removeAfterAdd")) {
+        $("<option>")
+          .text(list[i])
+          .appendTo($("#disableURLPatterns"));
+      }
+    }
+    $("#disableURLPatterns").change();
+  };
+  
+  if (obj.disableURLPatterns) {
+    fillListOfDisablePatterns(obj.disableURLPatterns);
   }
-}
-
-document.getElementById('explainCustom').innerHTML = document.getElementById('explainCustom').innerText.replace("<a>", '<a href="#" id="explainLink">'); 
-if (document.getElementById('explainLink')) {
-  document.getElementById('explainLink').addEventListener("click", function() {
-    window.open('https://code.google.com/p/mailto-chromeextension/wiki/AddCustomUrl');
+  
+  $("form[name='disableURLPatterns_addPattern']").submit(function(e) {
+    chrome.storage.local.get("disableURLPatterns", function(obj) {
+      var newPatterns = obj.disableURLPatterns || [];
+      var removeChangedPattern = $("#disableURLPatterns_newInput").attr("data-removeAfterAdd");
+      if (removeChangedPattern) {
+        if (newPatterns.indexOf(removeChangedPattern) !== -1) {
+          newPatterns.splice(newPatterns.indexOf(removeChangedPattern), 1);
+        }
+        $("#disableURLPatterns_newInput").removeAttr("data-removeAfterAdd");
+      }
+      newPatterns.push($("#disableURLPatterns_newInput").val());
+      newPatterns = $.unique(newPatterns).sort();
+      chrome.storage.local.set({"disableURLPatterns": newPatterns});
+      fillListOfDisablePatterns(newPatterns);
+      $("#disableURLPatterns_newInput").val("");
+    });
+    e.preventDefault();
   });
-}
+  
+  $("#disableURLPatterns").change(function() {
+    if (this.selectedOptions.length === 1) {
+      $("#disableURLPatterns_change").prop("disabled", false);
+      $("#disableURLPatterns_remove").prop("disabled", false);
+    } else {
+      $("#disableURLPatterns_change").prop("disabled", true);
+      $("#disableURLPatterns_remove").prop("disabled", this.selectedOptions.length === 0);
+    }
+  });
+  
+  var deletePattern = function(patterns) {
+    chrome.storage.local.get("disableURLPatterns", function(obj) {
+      var i, newPatterns = [];
+      for (i=0; i<obj.disableURLPatterns.length; i++) {
+        if (patterns.indexOf(obj.disableURLPatterns[i]) === -1) {
+          newPatterns.push(obj.disableURLPatterns[i]);
+        }
+      }
+      chrome.storage.local.set({"disableURLPatterns": newPatterns});
+      fillListOfDisablePatterns(newPatterns);
+    });
+  };
+  
+  $("#disableURLPatterns_remove").click(function() {
+    var i, patterns = [];
+    var options = $("#disableURLPatterns").prop("selectedOptions");
+    for (i=0; i<options.length; i++) {
+      patterns.push(options[i].textContent);
+    }
+    deletePattern(patterns);
+  });
+  $("#disableURLPatterns").keydown(function(e) {
+    if (e.keyCode === 46 && !$("#disableURLPatterns_remove").prop("disabled")) {
+      $("#disableURLPatterns_remove").click();
+    }
+  });
+  $("#disableURLPatterns_change").click(function() {
+    var option = $("#disableURLPatterns").prop("selectedOptions")[0];
+    $("#disableURLPatterns_newInput").val(option.textContent);
+    $("#disableURLPatterns_newInput").attr("data-removeAfterAdd", option.textContent);
+    chrome.storage.local.get("disableURLPatterns", function(obj) {
+      fillListOfDisablePatterns(obj.disableURLPatterns);
+    });
+  });
+  $("#disableURLPatterns").dblclick(function() {
+    if (!$("#disableURLPatterns_change").prop("disabled")) {
+      $("#disableURLPatterns_change").click();
+    }
+  });
+  
+  var inputMaxWidth = 0;
+  $("input[type='button'],input[type='submit']", "#disableOnWebsites")
+    .each(function(i, el) {
+      inputMaxWidth = Math.max(inputMaxWidth, $(el).width());
+    })
+    .width(inputMaxWidth);
+});
 
-initializeCustom();
+$("[data-i18nText]").each(function() {
+  $(this).text(chrome.i18n.getMessage(this.dataset.i18ntext));
+});
+$("[data-i18nTitle]").each(function() {
+  $(this).attr("title", chrome.i18n.getMessage(this.dataset.i18ntitle));
+});
+$("[data-i18nPlaceholder]").each(function() {
+  $(this).attr("placeholder", chrome.i18n.getMessage(this.dataset.i18nplaceholder));
+});
+$("[data-i18nValue]").each(function() {
+  $(this).val(chrome.i18n.getMessage(this.dataset.i18nvalue));
+});

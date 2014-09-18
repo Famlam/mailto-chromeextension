@@ -1,9 +1,17 @@
-#askMeEveryTime, #mailLinkOfPage, a[href^="#"], .saved {
+fieldset,
+.service_modify,
+#addNewServicesBeforeMe,
+#addNewServicesBeforeMe ~ * {
   display: none;
+}
+#servicesList {
+  display: block;
+  margin-bottom: 0px;
+}
+#service_sysDefault,
+label[for="service_sysDefault"] {
+  display: inline !important;
 }
 h1 {
   margin: 0px 18px;
-}
-#sysdefault {
-  display: block !important;
 }

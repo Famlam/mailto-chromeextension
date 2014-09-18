@@ -1,9 +1,12 @@
 <!DOCTYPE HTML>
 <html>
   <head>
-    <title data-i18n="options"></title>
+    <title data-i18nText="settingsTitle"></title>
     <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
     <link rel="stylesheet" href="options.css" type="text/css" />
+    <script type="text/javascript" src="jquery.min.js"></script>
+    <script type="text/javascript" src="options.js" defer="defer"></script>
+    <script type="text/javascript" src="mailto.js" defer="defer"></script>
   </head>
   <body>
     <form id="paypal" action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_blank">
@@ -12,30 +15,48 @@
       <input type="image" src="donate.gif" name="submit" alt="PayPal - The safer, easier way to pay online.">
     </form>
 
-    <h1 data-i18n="options" id='h1title'></h1>
-    <fieldset id="emailclientsArea"></fieldset>
-
-    <fieldset id="customURL">
-      <legend data-i18n="customEmailService"></legend>
-      <input type="text" id="inputCustom" spellcheck="false" data-i18n="urlinput" maxlength="1024" placeholder="i18n"/>
-      <input type="text" id="inputCustomName" spellcheck="false" data-i18n="nameinput" maxlength="100" placeholder="i18n"/>
-      <input type="button" id="submitCustom" value="i18n" data-i18n="add" disabled="disabled"/><br/>
-      <p id="explainCustom" data-i18n="customExplanation"></p>
+    <h1 data-i18nText="settingsTitle"></h1>
+    <fieldset id="currentService">
+      <legend data-i18nText="emailService"></legend>
+      <a target="_blank" href="mailto:" data-i18nTitle="composeMail"></a></br>
+      <input type="button" data-i18nValue="change" id="buttonOpenServicesList" />
     </fieldset>
     
-    <fieldset id="askMeEveryTime">
-      <legend data-i18n="multipleaccounts"></legend>
-      <input type="checkbox" name="askAlways" id="alwaysask"/><label for="alwaysask" data-i18n="alwaysask"/></label>
-      <span class="saved" id="askAlways" data-i18n="saved"></span>
+    <fieldset id="servicesList">
+      <legend data-i18nText="chooseService"></legend>
+      <!--services are inserted here-->
+      <span id="addNewServicesBeforeMe" data-i18nText="or"></span><br/>
+      <input type="radio" name="emailservice" id="service_askEveryTime" /><label for="service_askEveryTime" data-i18nText="askEveryTime"></label>
+      <input type="radio" name="emailservice" id="service_sysDefault" /><label for="service_sysDefault" data-i18nText="systemDefault"></label>
+      <br/>
+      <input type="radio" name="emailservice" id="service_new" data-id="new" /><a data-id="new" id="service_linkAddNew" data-i18nText="addNewLink"></a>
+      <form name="service_new">
+        <input name="service_new" id="service_new_name" type="text" maxlength="256" data-i18nPlaceholder="newServiceNameDescription" />
+        <input name="service_new" id="service_new_url" type="url" spellcheck="false" maxlength="1024" data-i18nPlaceholder="newServiceURLdescription" required="required" />
+        <input name="service_new" type="submit" data-i18nValue="add" />
+        <span>
+          (<a href="https://code.google.com/p/mailto-chromeextension/wiki/AddCustomUrl" target="_blank" data-i18nTitle="getHelpTitle" data-i18nText="getHelp"></a>)
+        </span>
+      </form>
     </fieldset>
-
-    <fieldset id="mailLinkOfPage">
-      <legend data-i18n="maillinkofpage"></legend>
-      <input type="checkbox" name="sendLinkPage" id="sendLinkOfPage"/><label for="sendLinkOfPage" data-i18n="maillinkofpagedesc"/></label>
-      <span class="saved" id="sendLinkPage" data-i18n="saved"></span><br/>
-      <span id="contextmenuwarning" data-i18n="contextmenuincompatible"></span>
+    
+    <fieldset>
+      <legend data-i18nText="contextmenu"></legend>
+      <input type="checkbox" id="contextmenu_enable" />
+      <label for="contextmenu_enable" data-i18nText="contextMenuCheckbox"></label>
+      <div id="contextmenu_unsupported" data-i18nText="contextmenuIncompatible"></div>
     </fieldset>
-
-    <script type="text/javascript" src="options.js"></script>
+    
+    <fieldset id="disableOnWebsites">
+      <legend data-i18nText="disableOnWebsites"></legend>
+      <form name="disableURLPatterns_addPattern">
+        <input type="text" spellcheck="false" maxlength="1024" data-i18nPlaceholder="pattern" name="disableURLPatterns_addPattern" id="disableURLPatterns_newInput" required="required" />
+        <input type="submit" data-i18nValue="add" name="disableURLPatterns_addPattern"/>
+      </form>
+      <br/>
+      <select id="disableURLPatterns" multiple="multiple" size="10"></select>
+      <input type="button" id="disableURLPatterns_change" data-i18nValue="change" disabled="disabled" /><br/>
+      <input type="button" id="disableURLPatterns_remove" data-i18nValue="remove" disabled="disabled" />
+     </fieldset>
   </body>
 </html>
