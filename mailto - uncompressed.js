@@ -1,6 +1,6 @@
 "use strict";
 var a = function(e) {
-  var i,
+  var i, targ,
       mailtoLink = "",
       target = e.target,
       regex = /^mailto\:(\/\/)?/i;
@@ -15,7 +15,7 @@ var a = function(e) {
       mailtoLink = mailtoLink.replace(/\?.*$/,"");
     }
     for (i=0; i<target.length; i++) {
-      var targ = target[i];
+      targ = target[i];
       if (targ.name && targ.value && !targ.disabled && !((targ.type==="checkbox" || targ.type==="radio") && !targ.checked)) {
         if (targ.type !== "password" && ["to", "cc", "bcc", "subject", "body"].indexOf(targ.name.toLowerCase()) !== -1) {
           mailtoLink += "&" + encodeURIComponent(targ.name) + "=" + encodeURIComponent(targ.value);

@@ -90,5 +90,9 @@
   "pattern": {
     "message": "Pattern to filter upon",
     "description": "[settings] Placeholder of the input area for new URL exclusion filters"
+  },
+  "donateNoAffiliation": {
+    "message": "Thank you for considering donating! Please note that your donation will be received by the author of this extension only. The author has no business affiliation with any of the email service providers. If you wish to donate to the email service providers instead, please refer to their websites.",
+    "description": "[settings] Text when you hover your mouse over the donate button"
   }
 }

@@ -261,10 +261,17 @@ var initializeServicesList = function() {
     e.preventDefault();
   };
   chrome.storage.local.get("mailtoURLs", function(obj) {
-    var key;
-
-    for (key in obj.mailtoURLs) {
-      $(createServiceEntry(obj, key)).insertBefore($("#addNewServicesBeforeMe"));
+    var i, keys = Object.keys(obj.mailtoURLs);
+    keys.sort(function(a, b) {
+      if (!obj.mailtoURLs[a].name && obj.mailtoURLs[b].name) {return 1;}
+      if (obj.mailtoURLs[a].name && !obj.mailtoURLs[b].name) {return -1;}
+      if (obj.mailtoURLs[a].name.toLowerCase() === obj.mailtoURLs[b].name.toLowerCase()) {
+        return obj.mailtoURLs[a].url < obj.mailtoURLs[b].url ? -1 : 1;
+      }
+      return obj.mailtoURLs[a].name.toLowerCase() < obj.mailtoURLs[b].name.toLowerCase() ? -1 : 1;
+    });
+    for (i=0; i<keys.length; i++) {
+      $(createServiceEntry(obj, keys[i])).insertBefore($("#addNewServicesBeforeMe"));
     }
     
     preventRemoveAllServices();

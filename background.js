@@ -2,16 +2,16 @@
 
 var prepareAndOpenComposeURL = function(mailtoLink, serviceID, serviceURL, openerTab) {
   var queryparts = {};
-  var i;
+  var i, split, what, newLine, val;
   var params = ("to=" + mailtoLink.replace('?', '&')).split('&');
   for (i = 0; i < params.length; i++) {
-    var split = params[i].match(/(\w+)\=(.*)/);
+    split = params[i].match(/(\w+)\=(.*)/);
     if (!split) {
       continue;
     }
-    var what = split[1].toLowerCase();
-    var newLine = (what === "body" && serviceID !== "ymail" && serviceID !== "aol") ? "\r\n" : "";
-    var val = decodeURIComponent(split[2] || "").replace(/\r\n|\r|\n/g, newLine);
+    what = split[1].toLowerCase();
+    newLine = (what === "body" && serviceID !== "ymail" && serviceID !== "aol") ? "\r\n" : "";
+    val = decodeURIComponent(split[2] || "").replace(/\r\n|\r|\n/g, newLine);
     if (queryparts[what]) {
       if (what === "to" || what === "bcc" || what === "cc") {
         if (val) {
@@ -80,9 +80,17 @@ var getEmailService = function(input, openerTab) {
         }
       };
       chrome.tabs.onRemoved.addListener(onRemoved);
-      wnd.setTimeout(function() {
-        wnd.close();
-      }, 60000);
+      // keep the connection with the BGpage open until wnd closes
+      wnd.chrome.runtime.onConnect.addListener(function() {});
+      chrome.runtime.connect();
+      // setTimeout doesn't work
+      wnd.chrome.alarms.create("timeToClose", {delayInMinutes: 1});
+      wnd.chrome.alarms.onAlarm.addListener(function(alarm) {
+        if (alarm.name === "timeToClose") {
+          wnd.close();
+        }
+      });
+
       wnd.addEventListener("beforeunload", function() {
         chrome.tabs.onRemoved.removeListener(onRemoved);
       });
@@ -153,7 +161,12 @@ chrome.contextMenus.onClicked.addListener(function(info, tab) {
 // On installation, show the settings popup
 chrome.runtime.onInstalled.addListener(function() {
   chrome.storage.local.get(null, function(obj) {
-  
+    if (obj.contextmenu) {
+      chrome.contextMenus.removeAll();
+      chrome.contextMenus.create({id: "maillinkofthispage",
+                                title: chrome.i18n.getMessage('mailThisPageURL')});
+    }
+    
     // TEMP since 17-9-14
     if (localStorage.mailtoURLs) {
       obj.mailtoURLs = JSON.parse(localStorage.mailtoURLs);

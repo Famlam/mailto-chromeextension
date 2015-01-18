@@ -90,5 +90,9 @@
   "pattern": {
     "message": "Filterpatroon",
     "description": "[settings] Placeholder of the input area for new URL exclusion filters"
+  },
+  "donateNoAffiliation": {
+    "message": "Hartelijk dank voor het overwegen van een donatie! Ben er alstublieft van bewust dat uw donatie alleen door de maker van deze extensie ontvangen zal worden. De auteur is niet zakelijk verbonden aan een emaildienst. Indien u uw donatie liever aan het bedrijf achter een emaildienst schenkt, gelieve hun website raad te plegen.",
+    "description": "[settings] Text when you hover your mouse over the donate button"
   }
 }

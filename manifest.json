@@ -16,7 +16,7 @@
     "128": "icon-128.png"
   },
   "name": "Mailto:",
-  "version": "1.28.0",
+  "version": "1.28.1",
   "background": {
     "scripts": ["background.js"],
     "persistent": false
@@ -26,5 +26,5 @@
   "content_security_policy": "default-src 'self' ",
   "options_page": "options.html",
   "default_locale": "en",
-  "permissions": ["contextMenus", "storage"]
+  "permissions": ["contextMenus", "storage", "alarms"]
 }
