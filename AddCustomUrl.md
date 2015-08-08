@@ -9,7 +9,7 @@ Although there are some default email clients listed on the options page, there 
 Basically, all you need to know is the URL that is used by the email server to compose a new email _from so called query parameters_. Sounds easy, but it often requires some searching, and not all email providers do support this.
 
 ## What is the syntax ##
-The syntax is very easy. You just write down the URL described above, and put the correct parameters in the URL. These are the parameters that you may use and what they are replaced with:
+The syntax is not very difficult. Once you know the URL described above, you need to tell the extension in which parts of that URL certain information (such as the `to` and `subject` lines) should be put. These are the parameters that you may use and what they are replaced with:
 
  * **`{url}`** inserts the full mailto: URL that you clicked at that position of the URL
  * **`{to}`** inserts the address(es) that will be in the _to_ field of the newly composed email
