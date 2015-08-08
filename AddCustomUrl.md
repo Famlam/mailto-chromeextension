@@ -29,7 +29,7 @@ the correct URL to use within the extension would be
 
 ## Examples ##
 Do you have an example URL? Please share it with others by emailing me or commenting below!
-Please note: the author of this extension is not affiliated with any of the above companies.
+Please note: the author of this extension is not affiliated with any of these companies.
 
 ##### AOL Mail #####
 This email provider is build in by default.
