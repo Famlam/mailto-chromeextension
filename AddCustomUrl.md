@@ -113,9 +113,10 @@ http://mail.yandex.ru/compose?mailto={url}
 ```
 
 ##### Zimbra #####
-Replace `mail.server.com` by the domain you use when reading your mail
+Replace `mail.server.com` by the domain you use when reading your mail. Choose the one that works best for you.
 ```
 https://mail.server.com/zimbra/mail?view=compose&subject={subject}&to={to}&cc={cc}&bcc={bcc}&body={body}
+https://mail.server.com/h/search?action=compose&to={to}&subject={subject}&cc={cc}&bcc={bcc}&body={body}
 ```
 
 ##### Zoho Mail #####
