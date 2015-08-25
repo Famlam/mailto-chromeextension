@@ -1,4 +1,7 @@
 # Changelog #
+**Version 1.28.2:** (_Chrome, Opera_)
+  * Switch from Google Code to GitHub
+
 **Version 1.28.1:** (_Chrome, Opera_)
   * Prevent the background page from closing when the 'choose an email service' window is opened
   * Sort the email services alphabetically again
